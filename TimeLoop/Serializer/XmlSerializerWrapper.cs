@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace TimeLoop.Functions.Serializer
+namespace TimeLoop.Serializer
 {
     public class XmlSerializerWrapper
     {

@@ -1,23 +1,17 @@
-﻿#if XML_SERIALIZATION
-using ContentData = TimeLoop.Functions.Serializer.XmlContentData;
-#else
-using ContentData = TimeLoop.Functions.JsonContentData;
-#endif
-using System.Linq;
+﻿using TimeLoop.Serializer;
 using System.Text;
-using System.Collections.Generic;
-using TimeLoop.Functions.Message;
-using TimeLoop.Functions.Player;
+using Audio;
+using TimeLoop.Helpers;
 using TimeLoop.Modules.General;
 using TimeLoop.Modules.TimeLoop;
-using UnityEngine;
+using TimeLoop.Repository;
 
 namespace TimeLoop
 {
     public class Main : IModApi
     {
         private TimeLooper _TimeLooper;
-        private ContentData _ContentData;
+        private XmlContentData _ContentData;
 
         private static bool IsDedicatedServer() => GameManager.Instance && GameManager.IsDedicatedServer;
         
@@ -27,6 +21,8 @@ namespace TimeLoop
             ModEvents.GameAwake.RegisterHandler(Awake);
             ModEvents.GameUpdate.RegisterHandler(Update);
             ModEvents.PlayerLogin.RegisterHandler(PlayerLogin);
+            ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnect);
+            ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerRespawn);
             //SdtdConsole.Instance.RegisterCommands();
         }
 
@@ -38,7 +34,7 @@ namespace TimeLoop
             if (_ContentData)
                 return;
 
-            _ContentData = ContentData.DeserializeInstance();
+            _ContentData = XmlContentData.DeserializeInstance();
             EnableTimeLoop.ContentData = _ContentData;
             
             _TimeLooper = new TimeLooper(_ContentData);
@@ -51,9 +47,31 @@ namespace TimeLoop
             
             _ContentData.CheckForUpdate();
             if(_ContentData.EnableTimeLooper)
-                _TimeLooper.Update();
+                _TimeLooper.CheckForTimeLoop();
         }
 
+        private void PlayerDisconnect(ClientInfo clientInfo, bool isShutdown)
+        {
+            if (!IsDedicatedServer())
+                return;
+            Log.Out("[TimeLoop] Player disconnected. Updating loop parameters.");
+            _TimeLooper.UpdateLoopState();
+        }
+
+        private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation)
+        {
+            if (!_ContentData.EnableTimeLooper)
+                return;
+                
+            if (respawnType != RespawnType.JoinMultiplayer)
+                return;
+            
+            if (!_TimeLooper.isLooping)
+                return;
+            
+            MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at 23:59", clientInfo);
+        }
+        
         private bool PlayerLogin(ClientInfo cInfo, string message, StringBuilder stringBuild)
         {
             if (!IsDedicatedServer())
@@ -61,19 +79,21 @@ namespace TimeLoop
             
             if (cInfo.PlatformId == null)
                 return false;
-
-            var playerData = (new PlayerDataRepository(cInfo, _ContentData)).GetPlayerData();
+            Log.Out("[TimeLoop] Player logged in. Updating loop parameters.");
+            _TimeLooper.UpdateLoopState();
+            
+            var playerData = (new PlayerDataRepository(_ContentData)).GetPlayerData(cInfo);
 
             if (playerData == null)
             {
-                var plyData = new Functions.Serializer.PlayerData(cInfo);
+                var plyData = new Models.PlayerData(cInfo);
                 _ContentData.PlayerData.Add(plyData);
                 _ContentData.SaveConfig();
-                Log.Out($"[TimeLoop] Player added to config. {plyData.ID}");
+                Log.Out($"[TimeLoop] Player added to config. {plyData.id}");
             }
             
             if (_ContentData.EnableTimeLooper) 
-                Message.SendPrivateChat($"Time loop is active. Therefore the time will reset every 24 hours until the precondition is met.", cInfo);
+                MessageHelper.SendPrivateChat($"Time loop is active. Therefore the time will reset every 24 hours until the precondition is met.", cInfo);
             
             return true;
         }

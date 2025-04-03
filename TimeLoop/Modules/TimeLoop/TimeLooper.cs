@@ -1,119 +1,58 @@
-﻿#if XML_SERIALIZATION
-using ContentData = TimeLoop.Functions.Serializer.XmlContentData;
-#else
-using ContentData = TimeLoop.Functions.JsonContentData;
-#endif
+﻿using System;
+using ContentData = TimeLoop.Serializer.XmlContentData;
 using System.Collections.Generic;
 using System.Linq;
-using TimeLoop.Functions.Message;
-using TimeLoop.Functions.Player;
+using TimeLoop.Enums;
+using TimeLoop.Helpers;
+using TimeLoop.Repository;
 
 
 namespace TimeLoop.Modules.TimeLoop
 {
     public class TimeLooper
     {
-        ContentData contentData;
-        double unscaledTimeStamp;
+        private readonly ContentData _contentData;
+        private double _unscaledTimeStamp;
+        public bool isLooping { get; private set; } = true;
 
         public TimeLooper(ContentData contentData)
         {
-            this.contentData = contentData;
+            _contentData = contentData;
         }
 
-        public void Update()
+        public void UpdateLoopState()
         {
-            switch (this.contentData.mode)
+            var plyDataRepo = new PlayerDataRepository(_contentData);
+            isLooping = _contentData.Mode switch
             {
-                case ContentData.Mode.WHITELIST:
-                    if(CheckIfAuthPlayerOnline()) return;
-                    break;
-                case ContentData.Mode.MIN_PLAYER_COUNT:
-                    if(CheckIfMinPlayerCountReached()) return;
-                    break;
-                case ContentData.Mode.MIN_WHITELIST_PLAYER_COUNT:
-                    if (CheckIfMinAuthPlayerCountReached()) return;
-                    break;
-                default:
-                    return;
-            }
-
-            if (unscaledTimeStamp != UnityEngine.Time.unscaledTimeAsDouble)
-            {
-                ulong worldTime = GameManager.Instance.World.GetWorldTime();
-                ulong dayTime = worldTime % 24000;
-                if (dayTime == 0)
-                {
-                    Log.Out("[TimeLoop] Time Reset.");
-                    Message.SendGlobalChat($"Resetting day. Please wait for authorized personnel or enough players to stop the time loop.");
-                    int previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;
-                    GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 2);
-                }
-
-                unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
-            }
+                EMode.Whitelist => !plyDataRepo.IsAuthPlayerOnline(),
+                EMode.MinPlayerCount => !plyDataRepo.IsMinPlayerThreshold(),
+                EMode.MinWhitelistPlayerCount => !plyDataRepo.IsMinAuthPlayerThreshold(),
+                _ => false
+            };
+            Log.Out("[TimeLoop] Loop state updated to: " + isLooping);
         }
 
-        private bool CheckIfAuthPlayerOnline()
+        public void CheckForTimeLoop()
         {
-            List<ClientInfo> clients = GetConnectedClients();
-            for (int i = 0; i < clients.Count; i++)
-            {
-                if (IsClientAuthorized(clients[i]))
-                {
-                    return true;
-                }
-            }
+            if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) < 2)
+                return;
 
-            return false;
-        }
-
-        private bool CheckIfMinPlayerCountReached()
-        {
-            List<ClientInfo> clients = GetConnectedClients();
-            return clients.Count >= this.contentData.MinPlayers;
-        }
-
-        private bool CheckIfMinAuthPlayerCountReached()
-        {
-            int authorizedClientCount = 0;
-
-            List<ClientInfo> clients = GetConnectedClients();
-            for (int i = 0; i < clients.Count; i++)
-            {
-                if (IsClientAuthorized(clients[i]))
-                {
-                    authorizedClientCount++;
-                }
-            }
-            return authorizedClientCount >= this.contentData.MinPlayers;
-        }
-
-        private List<ClientInfo> GetConnectedClients()
-        {
-            if (ConnectionManager.Instance.Clients != null && ConnectionManager.Instance.Clients.Count > 0)
-            {
-                return ConnectionManager.Instance.Clients.List.Where(x => 
-                x != null &&
-                x.loginDone &&
-                (x.CrossplatformId != null ||
-                x.PlatformId != null)).ToList();
-            }
-            else
-            {
-                return new List<ClientInfo>();
-            }
-        }
-
-        private bool IsClientAuthorized(ClientInfo cInfo)
-        {
-            var plyData = (new PlayerDataRepository(cInfo, contentData)).GetPlayerData();
-            if (plyData != null) 
-                return plyData.SkipTimeLoop;
+            if (!isLooping)
+                return;
             
-            Log.Error($"Player data could not be found for player {cInfo.playerName}.");
-            return false;
-
+            var worldTime = GameManager.Instance.World.GetWorldTime();
+            var dayTime = worldTime % 24000;
+            
+            if (dayTime == 0)
+            {
+                Log.Out("[TimeLoop] Time Reset.");
+                MessageHelper.SendGlobalChat("Resetting day. Please wait.");
+                var previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;
+                GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 2);
+            }
+            
+            _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
         }
 
         public static implicit operator bool(TimeLooper instance)

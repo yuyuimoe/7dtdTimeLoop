@@ -1,17 +1,14 @@
 ﻿
 using System.Collections.Generic;
 using Platform;
-#if XML_SERIALIZATION
-using ContentData = TimeLoop.Functions.Serializer.XmlContentData;
-#else
-using ContentData = TimeLoop.Functions.JsonContentData;
-#endif
+using TimeLoop.Enums;
+using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.General
 {
     public class EnableTimeLoop : IConsoleCommand
     {
-        public static ContentData ContentData;
+        public static XmlContentData ContentData;
 
         public bool IsExecuteOnClient => false;
 
@@ -46,22 +43,22 @@ namespace TimeLoop.Modules.General
                     {
                         case "none":
                         case "0":
-                            ContentData.mode = ContentData.Mode.DISABLED;
+                            ContentData.Mode = EMode.Disabled;
                             Log.Out("[TimeLoop] Mod disabled!");
                             break;
                         case "whitelist":
                         case "1":
-                            ContentData.mode = ContentData.Mode.WHITELIST;
+                            ContentData.Mode = EMode.Whitelist;
                             Log.Out("[TimeLoop] Whitelist Mode enabled!");
                             break;
                         case "threshold":
                         case "2":
-                            ContentData.mode = ContentData.Mode.MIN_PLAYER_COUNT;
+                            ContentData.Mode = EMode.MinPlayerCount;
                             Log.Out("[TimeLoop] Threshold Mode enabled!");
                             break;
                         case "whitelisted_threshold":
                         case "3":
-                            ContentData.mode = ContentData.Mode.MIN_WHITELIST_PLAYER_COUNT;
+                            ContentData.Mode = EMode.MinWhitelistPlayerCount;
                             Log.Out("[TimeLoop] Whitelisted Threshold Mode enabled!");
                             break;
                     }
@@ -74,13 +71,13 @@ namespace TimeLoop.Modules.General
                             Log.Out($"[TimeLoop] Min player count has been set to {commandParams[2]}!");
                             break;
                         case "auth":
-                            Functions.Serializer.PlayerData? player = ContentData.PlayerData.Find(x => x.PlayerName == commandParams[2]);
-                            if (player != null) player.SkipTimeLoop = true;
+                            Models.PlayerData? player = ContentData.PlayerData.Find(x => x.playerName == commandParams[2]);
+                            if (player != null) player.skipTimeLoop = true;
                             Log.Out($"[TimeLoop] Player {commandParams[2]} has been authorized!");
                             break;
                         case "refuse":
-                            player = ContentData.PlayerData.Find(x => x.PlayerName == commandParams[2]);
-                            if (player != null) player.SkipTimeLoop = false;
+                            player = ContentData.PlayerData.Find(x => x.playerName == commandParams[2]);
+                            if (player != null) player.skipTimeLoop = false;
                             Log.Out($"[TimeLoop] Player {commandParams[2]} has been unauthorized!");
                             break;
                     }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace TimeLoop.Functions.Message
+namespace TimeLoop.Helpers
 {
-    public static class Message
+    public static class MessageHelper
     {
         public static void SendGlobalChat(string message)
         {
