@@ -69,7 +69,7 @@ namespace TimeLoop
             if (!_TimeLooper.isLooping)
                 return;
             
-            MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at 23:59", clientInfo);
+            MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);
         }
         
         private bool PlayerLogin(ClientInfo cInfo, string message, StringBuilder stringBuild)

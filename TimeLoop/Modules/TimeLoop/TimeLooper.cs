@@ -24,13 +24,27 @@ namespace TimeLoop.Modules.TimeLoop
         public void UpdateLoopState()
         {
             var plyDataRepo = new PlayerDataRepository(_contentData);
-            isLooping = _contentData.Mode switch
+            bool newState = _contentData.Mode switch
             {
                 EMode.Whitelist => !plyDataRepo.IsAuthPlayerOnline(),
                 EMode.MinPlayerCount => !plyDataRepo.IsMinPlayerThreshold(),
                 EMode.MinWhitelistPlayerCount => !plyDataRepo.IsMinAuthPlayerThreshold(),
                 _ => false
             };
+            if (newState != isLooping)
+            {
+                switch (newState)
+                {
+                    case true:
+                        MessageHelper.SendGlobalChat("[TimeLooper] You seem to be stuck on the same day.");
+                        break;
+                    case false:
+                        MessageHelper.SendGlobalChat("[TimeLooper] Time flows normally.");
+                        break;
+                }
+
+                isLooping = newState;
+            }
             Log.Out("[TimeLoop] Loop state updated to: " + isLooping);
         }
 
@@ -48,7 +62,7 @@ namespace TimeLoop.Modules.TimeLoop
             if (dayTime <= 10)
             {
                 Log.Out("[TimeLoop] Time Reset.");
-                MessageHelper.SendGlobalChat("Resetting day. Please wait.");
+                MessageHelper.SendGlobalChat("[TimeLoop] Resetting day");
                 var previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;
                 GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 20);
             }
