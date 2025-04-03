@@ -1,13 +1,13 @@
-﻿#if XML_SERIALIZATION
-using ContentData = TimeLoop.Functions.XmlContentData;
+﻿
+using System.Collections.Generic;
+using Platform;
+#if XML_SERIALIZATION
+using ContentData = TimeLoop.Functions.Serializer.XmlContentData;
 #else
 using ContentData = TimeLoop.Functions.JsonContentData;
 #endif
-using System.Collections.Generic;
-using TimeLoop.Functions;
-using Platform;
 
-namespace TimeLoop.Modules
+namespace TimeLoop.Modules.General
 {
     public class EnableTimeLoop : IConsoleCommand
     {
@@ -74,7 +74,7 @@ namespace TimeLoop.Modules
                             Log.Out($"[TimeLoop] Min player count has been set to {commandParams[2]}!");
                             break;
                         case "auth":
-                            TimeLoop.Functions.PlayerData player = ContentData.PlayerData.Find(x => x.PlayerName == commandParams[2]);
+                            Functions.Serializer.PlayerData? player = ContentData.PlayerData.Find(x => x.PlayerName == commandParams[2]);
                             if (player != null) player.SkipTimeLoop = true;
                             Log.Out($"[TimeLoop] Player {commandParams[2]} has been authorized!");
                             break;

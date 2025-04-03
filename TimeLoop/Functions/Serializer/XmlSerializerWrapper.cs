@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
-using UnityEngine;
 
-namespace TimeLoop.Functions
+namespace TimeLoop.Functions.Serializer
 {
     public class XmlSerializerWrapper
     {

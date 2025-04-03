@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 
-namespace TimeLoop.Functions
+namespace TimeLoop.Functions.Serializer
 {
     [XmlRoot("TimeLoopSettings")]
     public class XmlContentData
@@ -44,7 +44,7 @@ namespace TimeLoop.Functions
         public Mode mode = Mode.WHITELIST;
 
         [XmlArray("KnownPlayers")]
-        public List<PlayerData> PlayerData = new List<PlayerData>();
+        public List<PlayerData?> PlayerData = new List<PlayerData?>();
         public int MinPlayers = 5;
 
         public static XmlContentData DeserializeInstance()

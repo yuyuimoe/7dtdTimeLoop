@@ -1,16 +1,15 @@
 ﻿#if XML_SERIALIZATION
-using ContentData = TimeLoop.Functions.XmlContentData;
+using ContentData = TimeLoop.Functions.Serializer.XmlContentData;
 #else
 using ContentData = TimeLoop.Functions.JsonContentData;
 #endif
-using System.Linq;
 using System.Collections.Generic;
-using TimeLoop.Functions;
-using Platform.Steam;
-using System;
+using System.Linq;
+using TimeLoop.Functions.Message;
+using TimeLoop.Functions.Player;
 
 
-namespace TimeLoop.Modules
+namespace TimeLoop.Modules.TimeLoop
 {
     public class TimeLooper
     {
@@ -108,22 +107,14 @@ namespace TimeLoop.Modules
 
         private bool IsClientAuthorized(ClientInfo cInfo)
         {
-            TimeLoop.Functions.PlayerData data = this.contentData.PlayerData?.Find
-                (
-                x => x.ID == cInfo.CrossplatformId.CombinedString ||
-                (cInfo.PlatformId is UserIdentifierSteam &&
-                x.ID == (cInfo.PlatformId as UserIdentifierSteam).SteamId.ToString())
-                );
-            if (data?.SkipTimeLoop == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+            var plyData = (new PlayerDataRepository(cInfo, contentData)).GetPlayerData();
+            if (plyData != null) 
+                return plyData.SkipTimeLoop;
+            
+            Log.Error($"Player data could not be found for player {cInfo.playerName}.");
+            return false;
 
+        }
 
         public static implicit operator bool(TimeLooper instance)
         {

@@ -1,8 +1,6 @@
-﻿using Platform.Steam;
-using System;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
-namespace TimeLoop.Functions
+namespace TimeLoop.Functions.Serializer
 {
 #if !XML_SERIALIZATION
     [Serializable]
@@ -35,7 +33,7 @@ namespace TimeLoop.Functions
 
         public PlayerData(ClientInfo clientInfo)
         {
-            this.ID = clientInfo.CrossplatformId.CombinedString;
+            this.ID = clientInfo.PlatformId.CombinedString;
             this.PlayerName = clientInfo.playerName;
             this.SkipTimeLoop = false;
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TimeLoop.Functions
+namespace TimeLoop.Functions.Message
 {
     public static class Message
     {
