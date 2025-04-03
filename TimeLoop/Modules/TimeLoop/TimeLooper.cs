@@ -1,6 +1,7 @@
 ﻿using System;
 using ContentData = TimeLoop.Serializer.XmlContentData;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using TimeLoop.Enums;
 using TimeLoop.Helpers;
@@ -35,7 +36,7 @@ namespace TimeLoop.Modules.TimeLoop
 
         public void CheckForTimeLoop()
         {
-            if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) < 2)
+            if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) <= 0.1)
                 return;
 
             if (!isLooping)
@@ -43,13 +44,13 @@ namespace TimeLoop.Modules.TimeLoop
             
             var worldTime = GameManager.Instance.World.GetWorldTime();
             var dayTime = worldTime % 24000;
-            
-            if (dayTime == 0)
+
+            if (dayTime <= 10)
             {
                 Log.Out("[TimeLoop] Time Reset.");
                 MessageHelper.SendGlobalChat("Resetting day. Please wait.");
                 var previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;
-                GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 2);
+                GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 20);
             }
             
             _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
