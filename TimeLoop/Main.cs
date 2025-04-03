@@ -79,6 +79,7 @@ namespace TimeLoop
             
             if (cInfo.PlatformId == null)
                 return false;
+            
             Log.Out("[TimeLoop] Player logged in. Updating loop parameters.");
             _TimeLooper.UpdateLoopState();
             
@@ -91,9 +92,6 @@ namespace TimeLoop
                 _ContentData.SaveConfig();
                 Log.Out($"[TimeLoop] Player added to config. {plyData.id}");
             }
-            
-            if (_ContentData.EnableTimeLooper) 
-                MessageHelper.SendPrivateChat($"Time loop is active. Therefore the time will reset every 24 hours until the precondition is met.", cInfo);
             
             return true;
         }

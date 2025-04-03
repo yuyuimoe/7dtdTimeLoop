@@ -4,6 +4,8 @@ using System.IO;
 using System.Xml.Serialization;
 using TimeLoop.Enums;
 using UnityEngine;
+using XMLData.Exceptions;
+using Random = UnityEngine.Random;
 
 namespace TimeLoop.Serializer
 {
@@ -30,6 +32,20 @@ namespace TimeLoop.Serializer
         public List<Models.PlayerData> PlayerData = new List<Models.PlayerData>();
         public int MinPlayers = 5;
 
+        private static XmlContentData CreateXML(string path)
+        {
+            Log.Out("[TimeLoop] Creating New Config ...");
+            var newXmlContentData = new XmlContentData();
+            XmlSerializerWrapper.ToXml(path, newXmlContentData);
+            return newXmlContentData;
+        }
+
+        private static XmlContentData LoadXML(string path)
+        {
+            Log.Out("[TimeLoop] Loading Config ...");
+            return XmlSerializerWrapper.FromXml<XmlContentData>(path);
+        }
+        
         public static XmlContentData DeserializeInstance()
         {
             string? currentDirectory = Directory.GetParent(Application.dataPath)?.FullName;
@@ -42,20 +58,19 @@ namespace TimeLoop.Serializer
             
             string absoluteFilePath = Path.Combine(currentDirectory, FileLocation);
             XmlContentData data;
+            if (!File.Exists(absoluteFilePath))
+                data = CreateXML(absoluteFilePath);
 
-            if (File.Exists(absoluteFilePath))
+            try
             {
-                //TODO: Add try-catch here.
-                Log.Out("[TimeLoop] Loading Config ...");
-                data = XmlSerializerWrapper.FromXml<XmlContentData>(absoluteFilePath);
+                data = LoadXML(absoluteFilePath);
             }
-            else
+            catch (XmlParserException e)
             {
-                Log.Out("[TimeLoop] Creating New Config ...");
-                data = new XmlContentData();
-                XmlSerializerWrapper.ToXml(absoluteFilePath, data);
+                Log.Error("[TimeLoop] It seems that the config file is corrupted. Generating a new one");
+                data = CreateXML(absoluteFilePath);
             }
-
+            
             data.AbsoluteFilePath = absoluteFilePath;
             data.UpdateLastModified();
             return data;
@@ -71,9 +86,7 @@ namespace TimeLoop.Serializer
         public void CheckForUpdate()
         {
             if (UpdateLastModified())
-            {
                 ReloadConfig();
-            }
         }
 
         public void ReloadConfig()
