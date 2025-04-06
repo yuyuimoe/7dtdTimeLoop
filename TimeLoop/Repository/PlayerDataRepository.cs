@@ -51,11 +51,8 @@ namespace TimeLoop.Repository
             if (ConnectionManager.Instance.Clients != null && ConnectionManager.Instance.Clients.Count > 0)
             {
                 return ConnectionManager.Instance.Clients.List.Where(x => 
-                    x != null &&
-                    x.loginDone &&
-                    !x.disconnecting &&
-                    (x.CrossplatformId != null ||
-                     x.PlatformId != null)).ToList();
+                    x is { loginDone: true, disconnecting: false } &&
+                    (x.CrossplatformId != null || x.PlatformId != null)).ToList();
             }
             return new List<ClientInfo>();
         }

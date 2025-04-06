@@ -58,16 +58,17 @@ namespace TimeLoop.Serializer
             
             string absoluteFilePath = Path.Combine(currentDirectory, FileLocation);
             XmlContentData data;
-            if (!File.Exists(absoluteFilePath))
-                data = CreateXML(absoluteFilePath);
-
             try
             {
                 data = LoadXML(absoluteFilePath);
             }
-            catch (XmlParserException e)
+            catch (XmlParserException)
             {
                 Log.Error("[TimeLoop] It seems that the config file is corrupted. Generating a new one");
+                data = CreateXML(absoluteFilePath);
+            }
+            catch (FileNotFoundException)
+            {
                 data = CreateXML(absoluteFilePath);
             }
             

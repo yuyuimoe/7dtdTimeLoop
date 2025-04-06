@@ -14,7 +14,7 @@ namespace TimeLoop.Modules.TimeLoop
     {
         private readonly ContentData _contentData;
         private double _unscaledTimeStamp;
-        public bool isLooping { get; private set; } = true;
+        public bool IsLooping { get; private set; } = true;
 
         public TimeLooper(ContentData contentData)
         {
@@ -31,7 +31,7 @@ namespace TimeLoop.Modules.TimeLoop
                 EMode.MinWhitelistPlayerCount => !plyDataRepo.IsMinAuthPlayerThreshold(),
                 _ => false
             };
-            if (newState != isLooping)
+            if (newState != IsLooping)
             {
                 switch (newState)
                 {
@@ -43,9 +43,9 @@ namespace TimeLoop.Modules.TimeLoop
                         break;
                 }
 
-                isLooping = newState;
+                IsLooping = newState;
             }
-            Log.Out("[TimeLoop] Loop state updated to: " + isLooping);
+            Log.Out("[TimeLoop] Loop state updated to: " + IsLooping);
         }
 
         public void CheckForTimeLoop()
@@ -53,7 +53,7 @@ namespace TimeLoop.Modules.TimeLoop
             if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) <= 0.1)
                 return;
 
-            if (!isLooping)
+            if (!IsLooping)
                 return;
             
             var worldTime = GameManager.Instance.World.GetWorldTime();
