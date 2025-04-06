@@ -10,7 +10,7 @@ namespace TimeLoop
 {
     public class Main : IModApi
     {
-        private TimeLooper _TimeLooper;
+        public static TimeLooper _TimeLooper { get; private set; }
         private XmlContentData _ContentData;
 
         private static bool IsDedicatedServer() => GameManager.Instance && GameManager.IsDedicatedServer;
@@ -66,7 +66,7 @@ namespace TimeLoop
             if (respawnType != RespawnType.JoinMultiplayer)
                 return;
             
-            if (!_TimeLooper.isLooping)
+            if (!_TimeLooper.IsLooping)
                 return;
             
             MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);

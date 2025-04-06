@@ -85,8 +85,12 @@ namespace TimeLoop.Serializer
 
         public void CheckForUpdate()
         {
-            if (UpdateLastModified())
-                ReloadConfig();
+            if (!UpdateLastModified()) 
+                return;
+            
+            ReloadConfig();
+            Main._TimeLooper.UpdateLoopState();
+
         }
 
         public void ReloadConfig()
