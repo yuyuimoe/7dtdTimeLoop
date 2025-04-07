@@ -9,8 +9,8 @@ namespace TimeLoop.Enums
         [XmlEnum(Name = "whitelist")]
         Whitelist,
         [XmlEnum(Name = "threshold")]
-        MinPlayerCount,
+        Threshold,
         [XmlEnum(Name = "whitelisted_threshold")]
-        MinWhitelistPlayerCount
+        WhitelistedThreshold
     }
 }

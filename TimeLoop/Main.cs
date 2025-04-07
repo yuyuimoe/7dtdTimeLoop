@@ -1,8 +1,6 @@
 ﻿using TimeLoop.Serializer;
 using System.Text;
-using Audio;
 using TimeLoop.Helpers;
-using TimeLoop.Modules.General;
 using TimeLoop.Modules.TimeLoop;
 using TimeLoop.Repository;
 
@@ -35,8 +33,6 @@ namespace TimeLoop
                 return;
 
             _ContentData = XmlContentData.DeserializeInstance();
-            EnableTimeLoop.ContentData = _ContentData;
-            
             _TimeLooper = new TimeLooper(_ContentData);
         }
 

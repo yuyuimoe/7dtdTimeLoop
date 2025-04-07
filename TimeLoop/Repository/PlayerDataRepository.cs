@@ -13,6 +13,20 @@ namespace TimeLoop.Repository
             _contentData = contentData;
         }
 
+        public Models.PlayerData? GetPlayerDataNameOrId(string nameOrId)
+        {
+            if (string.IsNullOrEmpty(nameOrId))
+                return null;
+            
+            return _contentData.PlayerData?.Find(data =>
+            {
+                if (data == null)
+                    return false;
+
+                return data.playerName.Equals(nameOrId) || data.id.Equals(nameOrId);
+            });
+        }
+        
         public Models.PlayerData? GetPlayerData(ClientInfo clientInfo)
         {
             return _contentData.PlayerData?.Find(data =>
