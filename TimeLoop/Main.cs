@@ -1,5 +1,7 @@
-﻿using TimeLoop.Serializer;
+﻿using System.Reflection;
+using TimeLoop.Serializer;
 using System.Text;
+using HarmonyLib;
 using TimeLoop.Helpers;
 using TimeLoop.Modules.TimeLoop;
 using TimeLoop.Repository;
@@ -18,8 +20,9 @@ namespace TimeLoop
             Log.Out("[TimeLoop] Initializing ...");
             ModEvents.GameAwake.RegisterHandler(Awake);
             ModEvents.GameUpdate.RegisterHandler(Update);
-            ModEvents.PlayerLogin.RegisterHandler(PlayerLogin);
-            ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnect);
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+             //ModEvents.PlayerLogin.RegisterHandler(PlayerLogin);
+            //ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnect);
             ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerRespawn);
         }
 
@@ -61,7 +64,7 @@ namespace TimeLoop
             if (respawnType != RespawnType.JoinMultiplayer)
                 return;
             
-            if (!_TimeLooper.IsLooping)
+            if (_TimeLooper.IsTimeFlowing)
                 return;
             
             MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);

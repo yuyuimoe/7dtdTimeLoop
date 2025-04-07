@@ -32,6 +32,7 @@ tl_mode <0/1/2/3>
             if (_params.Count == 0)
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Current Mode: {0}", XmlContentData.Instance.Mode);
+                return;
             }
             
             if (_params.Count != 1)
