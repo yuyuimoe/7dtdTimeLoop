@@ -2,7 +2,7 @@
 using System.Linq;
 using TimeLoop.Serializer;
 
-namespace TimeLoop.Repository
+namespace TimeLoop.Repositories
 {
     public class PlayerDataRepository
     {

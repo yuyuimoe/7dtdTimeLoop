@@ -1,14 +1,11 @@
 ﻿using System;
-using ContentData = TimeLoop.Serializer.XmlContentData;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using TimeLoop.Enums;
 using TimeLoop.Helpers;
-using TimeLoop.Repository;
+using TimeLoop.Repositories;
+using ContentData = TimeLoop.Serializer.XmlContentData;
 
 
-namespace TimeLoop.Modules.TimeLoop
+namespace TimeLoop.Modules
 {
     public class TimeLooper
     {

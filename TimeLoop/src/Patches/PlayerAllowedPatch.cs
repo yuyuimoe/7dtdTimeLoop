@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using TimeLoop.Repository;
+using TimeLoop.Repositories;
 using TimeLoop.Serializer;
 
 namespace TimeLoop.Patches

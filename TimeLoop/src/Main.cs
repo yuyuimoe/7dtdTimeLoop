@@ -3,8 +3,7 @@ using TimeLoop.Serializer;
 using System.Text;
 using HarmonyLib;
 using TimeLoop.Helpers;
-using TimeLoop.Modules.TimeLoop;
-using TimeLoop.Repository;
+using TimeLoop.Modules;
 
 namespace TimeLoop
 {
