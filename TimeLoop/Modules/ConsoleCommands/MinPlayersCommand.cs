@@ -25,6 +25,11 @@ tl_minplayers <x>
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
         {
+            if (_params.Count == 0)
+            {
+                SdtdConsole.Instance.Output("[TimeLoop] Minimum required players: {0}", XmlContentData.Instance.MinPlayers);
+                return;
+            }
             if (_params.Count != 1)
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Invalid number of arguments. Expected 1, received {0}.", _params.Count);

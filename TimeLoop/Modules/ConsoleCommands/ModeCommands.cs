@@ -29,6 +29,11 @@ tl_mode <0/1/2/3>
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
         {
+            if (_params.Count == 0)
+            {
+                SdtdConsole.Instance.Output("[TimeLoop] Current Mode: {0}", XmlContentData.Instance.Mode);
+            }
+            
             if (_params.Count != 1)
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Wrong number of parameters. Expected 1, found {0}", _params.Count);
