@@ -21,7 +21,6 @@ namespace TimeLoop
             ModEvents.PlayerLogin.RegisterHandler(PlayerLogin);
             ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnect);
             ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerRespawn);
-            //SdtdConsole.Instance.RegisterCommands();
         }
 
         private void Awake()

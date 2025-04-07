@@ -5,7 +5,7 @@ using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
-    public class TimeLooperChangeMode : ConsoleCmdAbstract
+    public class ModeCommands : ConsoleCmdAbstract
     {
         public override string getHelp()
         {

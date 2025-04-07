@@ -4,7 +4,7 @@ using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
-    public class TimeLooperAuthorizeClient : ConsoleCmdAbstract
+    public class AuthorizeClientCommand : ConsoleCmdAbstract
     {
         public override string GetHelp()
         {

@@ -3,7 +3,7 @@ using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
-    public class TimeLooperChangeMinPlayers : ConsoleCmdAbstract
+    public class MinPlayersCommand : ConsoleCmdAbstract
     {
         public override string GetHelp()
         {
