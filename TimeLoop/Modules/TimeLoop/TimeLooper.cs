@@ -27,8 +27,8 @@ namespace TimeLoop.Modules.TimeLoop
             bool newState = _contentData.Mode switch
             {
                 EMode.Whitelist => !plyDataRepo.IsAuthPlayerOnline(),
-                EMode.MinPlayerCount => !plyDataRepo.IsMinPlayerThreshold(),
-                EMode.MinWhitelistPlayerCount => !plyDataRepo.IsMinAuthPlayerThreshold(),
+                EMode.Threshold => !plyDataRepo.IsMinPlayerThreshold(),
+                EMode.WhitelistedThreshold => !plyDataRepo.IsMinAuthPlayerThreshold(),
                 _ => false
             };
             if (newState != IsLooping)
@@ -36,10 +36,10 @@ namespace TimeLoop.Modules.TimeLoop
                 switch (newState)
                 {
                     case true:
-                        MessageHelper.SendGlobalChat("[TimeLooper] You seem to be stuck on the same day.");
+                        MessageHelper.SendGlobalChat("[TimeLoop] You seem to be stuck on the same day.");
                         break;
                     case false:
-                        MessageHelper.SendGlobalChat("[TimeLooper] Time flows normally.");
+                        MessageHelper.SendGlobalChat("[TimeLoop] Time flows normally.");
                         break;
                 }
 

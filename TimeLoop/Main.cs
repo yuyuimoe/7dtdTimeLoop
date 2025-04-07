@@ -1,8 +1,6 @@
 ﻿using TimeLoop.Serializer;
 using System.Text;
-using Audio;
 using TimeLoop.Helpers;
-using TimeLoop.Modules.General;
 using TimeLoop.Modules.TimeLoop;
 using TimeLoop.Repository;
 
@@ -23,7 +21,6 @@ namespace TimeLoop
             ModEvents.PlayerLogin.RegisterHandler(PlayerLogin);
             ModEvents.PlayerDisconnected.RegisterHandler(PlayerDisconnect);
             ModEvents.PlayerSpawnedInWorld.RegisterHandler(OnPlayerRespawn);
-            //SdtdConsole.Instance.RegisterCommands();
         }
 
         private void Awake()
@@ -35,8 +32,6 @@ namespace TimeLoop
                 return;
 
             _ContentData = XmlContentData.DeserializeInstance();
-            EnableTimeLoop.ContentData = _ContentData;
-            
             _TimeLooper = new TimeLooper(_ContentData);
         }
 

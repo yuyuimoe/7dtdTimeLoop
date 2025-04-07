@@ -74,7 +74,8 @@ namespace TimeLoop.Serializer
             
             data.AbsoluteFilePath = absoluteFilePath;
             data.UpdateLastModified();
-            return data;
+            _instance = data;
+            return _instance;
         }
 
         protected bool UpdateLastModified()
