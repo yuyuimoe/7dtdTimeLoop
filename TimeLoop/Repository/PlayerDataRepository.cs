@@ -78,6 +78,7 @@ namespace TimeLoop.Repository
         
         private List<ClientInfo> GetConnectedClients()
         {
+            ConnectionManager.Instance.LateUpdate();
             if (ConnectionManager.Instance.Clients != null && ConnectionManager.Instance.Clients.Count > 0)
             {
                 return ConnectionManager.Instance.Clients.List.Where(x => 

@@ -14,7 +14,7 @@ namespace TimeLoop.Modules.TimeLoop
     {
         private readonly ContentData _contentData;
         private double _unscaledTimeStamp;
-        public bool IsLooping { get; private set; } = true;
+        public bool IsTimeFlowing { get; private set; } = true;
 
         public TimeLooper(ContentData contentData)
         {
@@ -24,28 +24,29 @@ namespace TimeLoop.Modules.TimeLoop
         public void UpdateLoopState()
         {
             var plyDataRepo = new PlayerDataRepository(_contentData);
-            bool newState = _contentData.Mode switch
+            bool newState = _contentData.EnableTimeLooper && _contentData.Mode switch
             {
-                EMode.Whitelist => !plyDataRepo.IsAuthPlayerOnline(),
-                EMode.Threshold => !plyDataRepo.IsMinPlayerThreshold(),
-                EMode.WhitelistedThreshold => !plyDataRepo.IsMinAuthPlayerThreshold(),
+                EMode.Whitelist => plyDataRepo.IsAuthPlayerOnline(),
+                EMode.Threshold => plyDataRepo.IsMinPlayerThreshold(),
+                EMode.WhitelistedThreshold => plyDataRepo.IsMinAuthPlayerThreshold(),
                 _ => false
             };
-            if (newState != IsLooping)
+            
+            if (newState != IsTimeFlowing)
             {
                 switch (newState)
                 {
-                    case true:
+                    case false:
                         MessageHelper.SendGlobalChat("[TimeLoop] You seem to be stuck on the same day.");
                         break;
-                    case false:
+                    case true:
                         MessageHelper.SendGlobalChat("[TimeLoop] Time flows normally.");
                         break;
                 }
 
-                IsLooping = newState;
+                IsTimeFlowing = newState;
             }
-            Log.Out("[TimeLoop] Loop state updated to: " + IsLooping);
+            Log.Out("[TimeLoop] Is time flowing? " + IsTimeFlowing);
         }
 
         public void CheckForTimeLoop()
@@ -53,7 +54,7 @@ namespace TimeLoop.Modules.TimeLoop
             if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) <= 0.1)
                 return;
 
-            if (!IsLooping)
+            if (IsTimeFlowing)
                 return;
             
             var worldTime = GameManager.Instance.World.GetWorldTime();
