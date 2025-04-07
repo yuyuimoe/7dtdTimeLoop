@@ -7,6 +7,10 @@ namespace TimeLoop.Patches
     {
         static void Postfix(ConnectionManager __instance)
         {
+            if (!Main.IsDedicatedServer())
+                return;
+            
+            Log.Out("[TimeLoop] Player disconnected. Updating loop parameters.");
             Main._TimeLooper.UpdateLoopState();
         }
     }

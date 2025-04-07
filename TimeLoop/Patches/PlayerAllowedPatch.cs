@@ -5,7 +5,7 @@ using TimeLoop.Serializer;
 namespace TimeLoop.Patches
 {
     [HarmonyPatch(typeof(AuthorizationManager), nameof(AuthorizationManager.playerAllowed))]
-    public class ConnectedPatch
+    public class PlayerAllowedPatch
     {
         static void Postfix(ClientInfo _clientInfo, AuthorizationManager __instance)
         {
@@ -20,7 +20,9 @@ namespace TimeLoop.Patches
             
             var playerData = (new PlayerDataRepository(XmlContentData.Instance)).GetPlayerData(_clientInfo);
 
-            if (playerData != null) return;
+            if (playerData != null) 
+                return;
+            
             var plyData = new Models.PlayerData(_clientInfo);
             XmlContentData.Instance.PlayerData.Add(plyData);
             XmlContentData.Instance.SaveConfig();
