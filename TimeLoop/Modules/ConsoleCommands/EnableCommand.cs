@@ -36,7 +36,7 @@ tl_enable <0/1>
                 return;
             }
 
-            if (int.TryParse(_params[0], out int newValue))
+            if (!int.TryParse(_params[0], out int newValue))
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Invalid parameter type. Expected integer, received {0}", _params[0].GetType());
                 return;
