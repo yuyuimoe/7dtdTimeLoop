@@ -58,25 +58,7 @@ You need:
 - 7 Days to Die installation
 
 ### Get the DLLs
-1. Create a folder called `Depts` inside the TimeLoop project
-2. Copy the following DLLs located in `<7DaysToDieRoot>/7DaysToDie_Data/Managed/`:
-- 0Harmony.dll
-- Assembly-CSharp.dll
-- LogLibrary.dll
-- UnityEngine.dll
-- UnityEngine.AnimationModule.dll
-- UnityEngine.CoreModule.dll
-- UnityEngine.JSONSerializeModule.dll
-- UnityEngine.PhysicsModule.dll
-- UnityEngine.ProfilerModule.dll
-- UnityEngine.UIModule.dll
-- UnityEngine.VirtualTexturingModule.dll
-- UnityEngine.VRModule.dll
-- UnityEngine.WindModule.dll
-- UnityEngine.XRModule.dll
-- Utf8Json.dll
-- XblPCSandbox.dll
-- zxing.unity.dll
+Check the README on the `depts` folder.
 
 ### Change build folder
 1. Open `TimeLoop.proj` on a text editor
