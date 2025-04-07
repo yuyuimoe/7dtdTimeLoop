@@ -29,25 +29,25 @@ Here's an example of the configuration file:
 
 ## Console commands
 **v2.2.0 or greater required**
-- tl_enable <0/1> - Enables or Disables the Mod
-  0 - Disable
+- tl_enable <0/1> - Enables or Disables the Mod<br>
+  0 - Disable<br>
   1 - Enable
-- tl_mode <0/1/2/3> - Changes the mode.
-  0 - Disabled.
-  1 - Whitelist
-  2 - Threshold
+- tl_mode <0/1/2/3> - Changes the mode.<br>
+  0 - Disabled.<br>
+  1 - Whitelist<br>
+  2 - Threshold<br>
   3 - Whitelisted Threshold
-- tl_auth <platform_id/player_name> <0/1> - (Un)authorizes a player.
-  (Whitelist or Whitelisted Threshold only)
-  platform_id/player_name - Player that will get their authorization status changed.
-  0 - Unauthorize
+- tl_auth <platform_id/player_name> <0/1> - (Un)authorizes a player.<br>
+  (Whitelist or Whitelisted Threshold only)<br>
+  platform_id/player_name - Player that will get their authorization status changed.<br>
+  0 - Unauthorize<br>
   1 - Authorize
-- tl_minplayers <x> Changes the minimum amount of players required to pass time.
-  (Threshold or Whitelisted Threshold only)
+- tl_minplayers <x> Changes the minimum amount of players required to pass time.<br>
+  (Threshold or Whitelisted Threshold only)<br>
   x - New amount of players
-- tl_list <all/auth/unauth> - Lists the players registed in the database
-  all - Shows all players
-  auth - Shows all authorized players
+- tl_list <all/auth/unauth> - Lists the players registed in the database<br>
+  all - Shows all players<br>
+  auth - Shows all authorized players<br>
   unauth - Shows all unauthorized players
 
 ## Building
