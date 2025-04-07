@@ -60,6 +60,22 @@ namespace TimeLoop.Repository
             return authorizedClientCount >= this._contentData.MinPlayers;
         }
 
+        public List<Models.PlayerData> GetAllUsers()
+        {
+            List<Models.PlayerData>? list = XmlContentData.Instance.PlayerData?.FindAll(data => data.playerName.Count() > 1);
+            return list ?? new List<Models.PlayerData>();
+        }
+
+        public List<Models.PlayerData> GetAllAuthorizedUsers(bool unauthorizedInstead = false)
+        {
+            List<Models.PlayerData>? list = 
+                XmlContentData
+                .Instance
+                .PlayerData?
+                .FindAll(data => data.playerName.Count() > 1 && data.skipTimeLoop == !unauthorizedInstead);
+            return list ?? new List<Models.PlayerData>();
+        }
+        
         private List<ClientInfo> GetConnectedClients()
         {
             if (ConnectionManager.Instance.Clients != null && ConnectionManager.Instance.Clients.Count > 0)
