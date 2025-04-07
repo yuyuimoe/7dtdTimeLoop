@@ -1,4 +1,4 @@
-# TimeLooper
+# TimeLoop
 A mod that allows you to loop time while certain players are not in the server.
 
 ## Configuration
@@ -26,6 +26,29 @@ Here's an example of the configuration file:
 </TimeLoopSettings>
 <!-- That's it, you're done. -->
 ```
+
+## Console commands
+**v2.2.0 or greater required**
+- tl_enable <0/1> - Enables or Disables the Mod
+  0 - Disable
+  1 - Enable
+- tl_mode <0/1/2/3> - Changes the mode.
+  0 - Disabled.
+  1 - Whitelist
+  2 - Threshold
+  3 - Whitelisted Threshold
+- tl_auth <platform_id/player_name> <0/1> - (Un)authorizes a player.
+  (Whitelist or Whitelisted Threshold only)
+  platform_id/player_name - Player that will get their authorization status changed.
+  0 - Unauthorize
+  1 - Authorize
+- tl_minplayers <x> Changes the minimum amount of players required to pass time.
+  (Threshold or Whitelisted Threshold only)
+  x - New amount of players
+- tl_list <all/auth/unauth> - Lists the players registed in the database
+  all - Shows all players
+  auth - Shows all authorized players
+  unauth - Shows all unauthorized players
 
 ## Building
 You need:
