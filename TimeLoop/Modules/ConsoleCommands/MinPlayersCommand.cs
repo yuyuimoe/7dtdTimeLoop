@@ -15,7 +15,7 @@ tl_minplayers <x>
         
         public override string[] getCommands()
         {
-            return new[] { "tl_minplayers", "timeloop_minplayers" };
+            return new[] { "tl_min", "tl_minplayers", "timeloop_minplayers" };
         }
 
         public override string getDescription()
