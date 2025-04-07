@@ -50,7 +50,8 @@ tl_auth <player_name/platform_id> <0/1> - Authorizes a player to leave the time 
             playerData.skipTimeLoop = newValue >= 1;
             XmlContentData.Instance.SaveConfig();
             Main._TimeLooper.UpdateLoopState();
-            SdtdConsole.Instance.Output("[TimeLoop] Authorized client {0} to skip the time loop", playerData.playerName);
+            string newState = playerData.skipTimeLoop ? "Authorized" : "Unauthorized";
+            SdtdConsole.Instance.Output("[TimeLoop] {0} client {1} to skip the time loop", newState, playerData.playerName);
         }
     }
 }

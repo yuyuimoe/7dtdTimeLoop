@@ -10,10 +10,11 @@ namespace TimeLoop.Modules.ConsoleCommands
         public override string getHelp()
         {
             return @"Usage:
-tl_mode <0/1/2>
-    0 - Change to whitelist mode
-    1 - Change to threshold mode
-    2 - Change to whitelisted threshold mode";
+tl_mode <0/1/2/3>
+    0 - Disables the mod.
+    1 - Change to whitelist mode
+    2 - Change to threshold mode
+    3 - Change to whitelisted threshold mode";
         }
         
         public override string[] getCommands()
