@@ -64,10 +64,13 @@ namespace TimeLoop
 
         public void UpdateFromFile()
         {
+            if (!File.Exists(_absoluteFilePath))
+                return;
+            
             if (!this.IsFileModified())
                 return;
             
-            XmlSerializerWrapper.FromXmlOverwrite<ConfigModel>(this._absoluteFilePath, this.Config);
+            XmlSerializerWrapper.FromXmlOverwrite(this._absoluteFilePath, this.Config);
             Log.Out("[TimeLoop] Configuration updated.");
             Main._TimeLooper.UpdateLoopState();
         }
@@ -76,7 +79,8 @@ namespace TimeLoop
         {
             if (!File.Exists(this._absoluteFilePath))
                 return;
-            XmlSerializerWrapper.ToXml<ConfigModel>(this._absoluteFilePath, this.Config);
+            
+            XmlSerializerWrapper.ToXml(this._absoluteFilePath, this.Config);
             this._lastModified = new FileInfo(this._absoluteFilePath).LastWriteTime;
         }
 
