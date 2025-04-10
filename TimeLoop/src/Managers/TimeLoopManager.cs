@@ -27,7 +27,8 @@ namespace TimeLoop.Managers
                 EMode.Whitelist => plyDataRepo.IsAuthPlayerOnline(),
                 EMode.Threshold => plyDataRepo.IsMinPlayerThreshold(),
                 EMode.WhitelistedThreshold => plyDataRepo.IsMinAuthPlayerThreshold(),
-                _ => false
+                EMode.Always => false,
+                _ => true
             };
             
             if (newState != IsTimeFlowing)
