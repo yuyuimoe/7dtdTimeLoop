@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TimeLoop.Enums;
+using TimeLoop.Managers;
 using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.ConsoleCommands
@@ -55,7 +56,7 @@ tl_mode <0/1/2/3>
             
             ConfigManager.Instance.Config.Mode = newMode;
             ConfigManager.Instance.SaveToFile();
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
             SdtdConsole.Instance.Output("[TimeLoop] Mode changed to {0}.", ConfigManager.Instance.Config.Mode);
         }
     }

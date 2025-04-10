@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TimeLoop.Managers;
 using TimeLoop.Serializer;
 
 namespace TimeLoop.Modules.ConsoleCommands
@@ -44,7 +45,7 @@ tl_minplayers <x>
             
             ConfigManager.Instance.Config.MinPlayers = newValue;
             ConfigManager.Instance.SaveToFile();
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
             SdtdConsole.Instance.Output("[TimeLoop] Minimum player requirements changed to {0}", newValue);
         }
     }

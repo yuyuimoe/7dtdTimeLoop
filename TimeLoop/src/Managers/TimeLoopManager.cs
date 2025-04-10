@@ -1,27 +1,29 @@
 ﻿using System;
 using TimeLoop.Enums;
 using TimeLoop.Helpers;
-using TimeLoop.Repositories;
 using TimeLoop.Models;
+using TimeLoop.Repositories;
 
-
-namespace TimeLoop.Modules
+namespace TimeLoop.Managers
 {
-    public class TimeLooper
+    public class TimeLoopManager
     {
-        private readonly ConfigModel _config;
+        #region Singleton
+        private static TimeLoopManager? _instance;
+        public static TimeLoopManager Instance{
+            get { return _instance ??= new TimeLoopManager(); }
+        }
+        
+        public static void Instantiate() => _instance = new TimeLoopManager();
+        #endregion
+        
         private double _unscaledTimeStamp;
         public bool IsTimeFlowing { get; private set; } = true;
-
-        public TimeLooper(ConfigModel config)
-        {
-            _config = config;
-        }
 
         public void UpdateLoopState()
         {
             var plyDataRepo = new PlayerRepository();
-            bool newState = _config.Enabled && _config.Mode switch
+            bool newState = ConfigManager.Instance.Config.Enabled && ConfigManager.Instance.Config.Mode switch
             {
                 EMode.Whitelist => plyDataRepo.IsAuthPlayerOnline(),
                 EMode.Threshold => plyDataRepo.IsMinPlayerThreshold(),
@@ -68,7 +70,7 @@ namespace TimeLoop.Modules
             _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
         }
 
-        public static implicit operator bool(TimeLooper instance)
+        public static implicit operator bool(TimeLoopManager instance)
         {
             return instance != null;
         }

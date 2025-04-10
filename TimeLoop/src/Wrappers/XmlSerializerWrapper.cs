@@ -3,9 +3,9 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace TimeLoop.Serializer
+namespace TimeLoop.Wrappers
 {
-    public class XmlSerializerWrapper
+    public static class XmlSerializerWrapper
     {
         public static T FromXml<T>(string path)
         {
@@ -37,12 +37,6 @@ namespace TimeLoop.Serializer
             {
                 objFields[i].SetValue(obj, objFields[i].GetValue(objNew));
             }
-        }
-
-
-        public static implicit operator bool(XmlSerializerWrapper instance)
-        {
-            return instance != null;
         }
     }
 }

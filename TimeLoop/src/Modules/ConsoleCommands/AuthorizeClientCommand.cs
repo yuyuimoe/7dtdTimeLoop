@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TimeLoop.Managers;
 using TimeLoop.Repositories;
 using TimeLoop.Serializer;
 
@@ -49,7 +50,7 @@ tl_auth <player_name/platform_id> <0/1> - Authorizes a player to leave the time 
 
             playerData.skipTimeLoop = newValue >= 1;
             ConfigManager.Instance.SaveToFile();
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
             string newState = playerData.skipTimeLoop ? "Authorized" : "Unauthorized";
             SdtdConsole.Instance.Output("[TimeLoop] {0} client {1} to skip the time loop", newState, playerData.playerName);
         }

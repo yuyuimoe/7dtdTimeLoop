@@ -5,7 +5,7 @@ using TimeLoop.Models;
 using TimeLoop.Serializer;
 using UnityEngine;
 
-namespace TimeLoop
+namespace TimeLoop.Managers
 {
     public class ConfigManager
     {
@@ -14,6 +14,7 @@ namespace TimeLoop
         public static ConfigManager Instance{
             get { return _instance ??= new ConfigManager(Main.ConfigFilePath); }
         }
+        public static void Instantiate() => _instance = new ConfigManager(Main.ConfigFilePath);
         #endregion
         
         public ConfigModel Config { get; private set; }
@@ -25,7 +26,7 @@ namespace TimeLoop
             _absoluteFilePath = GetAbsolutePath(fileLocation);
             Config = LoadConfig();
         }
-
+        
         private bool IsFileModified() => this._lastModified != new FileInfo(this._absoluteFilePath).LastWriteTime;
         
         private string GetAbsolutePath(string relativeFilePath)
@@ -72,7 +73,7 @@ namespace TimeLoop
             
             XmlSerializerWrapper.FromXmlOverwrite(this._absoluteFilePath, this.Config);
             Log.Out("[TimeLoop] Configuration updated.");
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
         }
 
         public void SaveToFile()

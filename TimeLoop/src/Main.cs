@@ -1,15 +1,12 @@
 ﻿using System.Reflection;
-using TimeLoop.Serializer;
-using System.Text;
 using HarmonyLib;
 using TimeLoop.Helpers;
-using TimeLoop.Modules;
+using TimeLoop.Managers;
 
 namespace TimeLoop
 {
     public class Main : IModApi
     {
-        public static TimeLooper _TimeLooper { get; private set; }
         public const string ConfigFilePath = "Mods/TimeLoop/TimeLooper.xml";
 
         public static bool IsDedicatedServer() => GameManager.Instance && GameManager.IsDedicatedServer;
@@ -27,8 +24,9 @@ namespace TimeLoop
         {
             if (!IsDedicatedServer())
                 return;
-            
-            _TimeLooper = new TimeLooper(ConfigManager.Instance.Config);
+
+            ConfigManager.Instantiate();
+            TimeLoopManager.Instantiate();
         }
 
         private void Update()
@@ -38,7 +36,7 @@ namespace TimeLoop
             
             ConfigManager.Instance.UpdateFromFile();
             if(ConfigManager.Instance.Config.Enabled)
-                _TimeLooper.CheckForTimeLoop();
+                TimeLoopManager.Instance.CheckForTimeLoop();
         }
 
         private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation)
@@ -49,7 +47,7 @@ namespace TimeLoop
             if (respawnType != RespawnType.JoinMultiplayer)
                 return;
             
-            if (_TimeLooper.IsTimeFlowing)
+            if (TimeLoopManager.Instance.IsTimeFlowing)
                 return;
             
             MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);
