@@ -13,7 +13,6 @@ namespace TimeLoop.Managers
         public static TimeLoopManager Instance{
             get { return _instance ??= new TimeLoopManager(); }
         }
-        
         public static void Instantiate() => _instance = new TimeLoopManager();
         #endregion
         

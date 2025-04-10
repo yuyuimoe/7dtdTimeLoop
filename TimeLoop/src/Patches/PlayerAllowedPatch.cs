@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using TimeLoop.Managers;
 using TimeLoop.Repositories;
-using TimeLoop.Serializer;
 
 namespace TimeLoop.Patches
 {
@@ -16,7 +16,7 @@ namespace TimeLoop.Patches
                 return;
             
             Log.Out("[TimeLoop] Player logged in. Updating loop parameters.");
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
             
             var playerData = new PlayerRepository().GetPlayerData(_clientInfo);
 
