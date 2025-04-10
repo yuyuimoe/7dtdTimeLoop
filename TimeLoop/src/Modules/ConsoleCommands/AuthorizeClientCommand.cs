@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using TimeLoop.Repository;
-using TimeLoop.Serializer;
+using TimeLoop.Managers;
+using TimeLoop.Repositories;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
@@ -39,8 +39,8 @@ tl_auth <player_name/platform_id> <0/1> - Authorizes a player to leave the time 
                 return;
             }
 
-            var playerDataRepository = new PlayerDataRepository(XmlContentData.Instance);
-            Models.PlayerData? playerData = playerDataRepository.GetPlayerDataNameOrId(_params[0]);
+            var playerDataRepository = new PlayerRepository();
+            Models.PlayerModel? playerData = playerDataRepository.GetPlayerDataNameOrId(_params[0]);
             if (playerData == null)
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Client {0} could not be found in the database", _params[0]);
@@ -48,8 +48,8 @@ tl_auth <player_name/platform_id> <0/1> - Authorizes a player to leave the time 
             }
 
             playerData.skipTimeLoop = newValue >= 1;
-            XmlContentData.Instance.SaveConfig();
-            Main._TimeLooper.UpdateLoopState();
+            ConfigManager.Instance.SaveToFile();
+            TimeLoopManager.Instance.UpdateLoopState();
             string newState = playerData.skipTimeLoop ? "Authorized" : "Unauthorized";
             SdtdConsole.Instance.Output("[TimeLoop] {0} client {1} to skip the time loop", newState, playerData.playerName);
         }

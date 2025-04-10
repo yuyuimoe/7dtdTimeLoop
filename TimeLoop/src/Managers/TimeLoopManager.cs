@@ -1,34 +1,33 @@
 ﻿using System;
-using ContentData = TimeLoop.Serializer.XmlContentData;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using TimeLoop.Enums;
 using TimeLoop.Helpers;
-using TimeLoop.Repository;
+using TimeLoop.Models;
+using TimeLoop.Repositories;
 
-
-namespace TimeLoop.Modules.TimeLoop
+namespace TimeLoop.Managers
 {
-    public class TimeLooper
+    public class TimeLoopManager
     {
-        private readonly ContentData _contentData;
+        #region Singleton
+        private static TimeLoopManager? _instance;
+        public static TimeLoopManager Instance{
+            get { return _instance ??= new TimeLoopManager(); }
+        }
+        public static void Instantiate() => _instance = new TimeLoopManager();
+        #endregion
+        
         private double _unscaledTimeStamp;
         public bool IsTimeFlowing { get; private set; } = true;
 
-        public TimeLooper(ContentData contentData)
-        {
-            _contentData = contentData;
-        }
-
         public void UpdateLoopState()
         {
-            var plyDataRepo = new PlayerDataRepository(_contentData);
-            bool newState = _contentData.EnableTimeLooper && _contentData.Mode switch
+            var plyDataRepo = new PlayerRepository();
+            bool newState = ConfigManager.Instance.Config.Enabled && ConfigManager.Instance.Config.Mode switch
             {
                 EMode.Whitelist => plyDataRepo.IsAuthPlayerOnline(),
                 EMode.Threshold => plyDataRepo.IsMinPlayerThreshold(),
                 EMode.WhitelistedThreshold => plyDataRepo.IsMinAuthPlayerThreshold(),
+                EMode.Always => false,
                 _ => false
             };
             
@@ -71,7 +70,7 @@ namespace TimeLoop.Modules.TimeLoop
             _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
         }
 
-        public static implicit operator bool(TimeLooper instance)
+        public static implicit operator bool(TimeLoopManager instance)
         {
             return instance != null;
         }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TimeLoop.Serializer;
+using TimeLoop.Managers;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
@@ -27,7 +27,7 @@ tl_enable <0/1>
         {
             if (_params.Count == 0)
             {
-                SdtdConsole.Instance.Output("[TimeLoop] Is Mod Enabled? {0}", XmlContentData.Instance.EnableTimeLooper);
+                SdtdConsole.Instance.Output("[TimeLoop] Is Mod Enabled? {0}", ConfigManager.Instance.Config.Enabled);
                 return;
             }
             if (_params.Count > 1)
@@ -42,10 +42,10 @@ tl_enable <0/1>
                 return;
             }
 
-            XmlContentData.Instance.EnableTimeLooper = newValue >= 1;
-            XmlContentData.Instance.SaveConfig();
-            Main._TimeLooper.UpdateLoopState();
-            string newState = XmlContentData.Instance.EnableTimeLooper ? "Enabled" : "Disabled";
+            ConfigManager.Instance.Config.Enabled = newValue >= 1;
+            ConfigManager.Instance.SaveToFile();
+            TimeLoopManager.Instance.UpdateLoopState();
+            string newState = ConfigManager.Instance.Config.Enabled ? "Enabled" : "Disabled";
             SdtdConsole.Instance.Output("[TimeLoop] Time Looper has been {0}", newState);
         }
     }

@@ -4,8 +4,8 @@ namespace TimeLoop.Enums
 {
     public enum EMode
     {
-        [XmlEnum(Name = "none")]
-        Disabled,
+        [XmlEnum(Name = "always")]
+        Always,
         [XmlEnum(Name = "whitelist")]
         Whitelist,
         [XmlEnum(Name = "threshold")]

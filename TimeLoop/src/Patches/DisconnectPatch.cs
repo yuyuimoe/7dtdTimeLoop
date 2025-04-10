@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TimeLoop.Managers;
 
 namespace TimeLoop.Patches
 {
@@ -11,7 +12,7 @@ namespace TimeLoop.Patches
                 return;
             
             Log.Out("[TimeLoop] Player disconnected. Updating loop parameters.");
-            Main._TimeLooper.UpdateLoopState();
+            TimeLoopManager.Instance.UpdateLoopState();
         }
     }
 }

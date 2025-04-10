@@ -7,24 +7,25 @@ The configuration file gets generated when you launch the mod for the first time
 Here's an example of the configuration file:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<TimeLoopSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<TimeLoopConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <!-- Enables the mod -->
-  <EnableTimeLooper>true</EnableTimeLooper>
-  <!-- 
-  "whitelist" is Whitelist mode, which means only players with `SkipTimeLoop=true` will move time
+  <Enabled>true</Enabled>
+  <!--
+  "always" is Always mode, which means this day will loop no matter what.
+  "whitelist" is Whitelist mode, which means only players with `Whitelisted="true"` will move time
   "threshold" is MinPlayers mode, which means time only moves when x amount of players are online
   "whitelisted_threshold" is the combination of the two above: time only moves when x amount of whitelisted players are online
   -->
-  <mode>whitelist</mode>
-  <!-- List of known players -->
-  <KnownPlayers>
-    <!-- In Whitelist mode, change `SkipTimeLoop` to "true" to whitelist a player -->
-    <PlayerData ID="Local_Yui" PlayerName="Yui" SkipTimeLoop="false" />
-  </KnownPlayers>
-  <!-- In threshold mode, change the value below to reduce or increase the amount of minimum players -->
-  <MinPlayers>5</MinPlayers>
-</TimeLoopSettings>
-<!-- That's it, you're done. -->
+  <Mode>whitelist</Mode>
+  <!-- List of players -->
+  <Players>
+    <!-- In Whitelist mode, change `Whitelisted` to "true" to whitelist a player -->
+    <PlayerModel ID="Steam_76561198061215936" Name="Yui" Whitelisted="false" />
+  </Players>
+  <!-- In threshold mode, change the value below to set the amount of minimum players -->
+  <MinPlayers>1</MinPlayers>
+  <!-- That's it, you're done. -->
+</TimeLoopConfig>
 ```
 
 ## Console commands
@@ -33,7 +34,7 @@ Here's an example of the configuration file:
   0 - Disable<br>
   1 - Enable
 - tl_mode <0/1/2/3> - Changes the mode.<br>
-  0 - Disabled.<br>
+  0 - Always.<br>
   1 - Whitelist<br>
   2 - Threshold<br>
   3 - Whitelisted Threshold
@@ -58,25 +59,7 @@ You need:
 - 7 Days to Die installation
 
 ### Get the DLLs
-1. Create a folder called `Depts` inside the TimeLoop project
-2. Copy the following DLLs located in `<7DaysToDieRoot>/7DaysToDie_Data/Managed/`:
-- 0Harmony.dll
-- Assembly-CSharp.dll
-- LogLibrary.dll
-- UnityEngine.dll
-- UnityEngine.AnimationModule.dll
-- UnityEngine.CoreModule.dll
-- UnityEngine.JSONSerializeModule.dll
-- UnityEngine.PhysicsModule.dll
-- UnityEngine.ProfilerModule.dll
-- UnityEngine.UIModule.dll
-- UnityEngine.VirtualTexturingModule.dll
-- UnityEngine.VRModule.dll
-- UnityEngine.WindModule.dll
-- UnityEngine.XRModule.dll
-- Utf8Json.dll
-- XblPCSandbox.dll
-- zxing.unity.dll
+Check the README on the `depts` folder.
 
 ### Change build folder
 1. Open `TimeLoop.proj` on a text editor

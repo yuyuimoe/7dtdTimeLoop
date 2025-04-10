@@ -1,24 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TimeLoop.Serializer;
+using TimeLoop.Managers;
 
-namespace TimeLoop.Repository
+namespace TimeLoop.Repositories
 {
-    public class PlayerDataRepository
+    public class PlayerRepository
     {
-        private readonly XmlContentData _contentData;
-
-        public PlayerDataRepository(XmlContentData contentData)
-        {
-            _contentData = contentData;
-        }
-
-        public Models.PlayerData? GetPlayerDataNameOrId(string nameOrId)
+        public Models.PlayerModel? GetPlayerDataNameOrId(string nameOrId)
         {
             if (string.IsNullOrEmpty(nameOrId))
                 return null;
             
-            return _contentData.PlayerData?.Find(data =>
+            return ConfigManager.Instance.Config.Players.Find(data =>
             {
                 if (data == null)
                     return false;
@@ -27,9 +20,9 @@ namespace TimeLoop.Repository
             });
         }
         
-        public Models.PlayerData? GetPlayerData(ClientInfo clientInfo)
+        public Models.PlayerModel? GetPlayerData(ClientInfo clientInfo)
         {
-            return _contentData.PlayerData?.Find(data =>
+            return ConfigManager.Instance.Config.Players.Find(data =>
             {
                 if (data == null)
                     return false;
@@ -50,30 +43,28 @@ namespace TimeLoop.Repository
         public bool IsMinPlayerThreshold()
         {
             List<ClientInfo> clients = GetConnectedClients();
-            return clients.Count >= this._contentData.MinPlayers;
+            return clients.Count >= ConfigManager.Instance.Config.MinPlayers;
         }
 
         public bool IsMinAuthPlayerThreshold()
         {
             List<ClientInfo> clients = GetConnectedClients();
             int authorizedClientCount = clients.Count(IsClientAuthorized);
-            return authorizedClientCount >= this._contentData.MinPlayers;
+            return authorizedClientCount >= ConfigManager.Instance.Config.MinPlayers;
         }
 
-        public List<Models.PlayerData> GetAllUsers()
+        public List<Models.PlayerModel> GetAllUsers()
         {
-            List<Models.PlayerData>? list = XmlContentData.Instance.PlayerData?.FindAll(data => data.playerName.Count() > 1);
-            return list ?? new List<Models.PlayerData>();
+            return ConfigManager.Instance.Config.Players.FindAll(data => data.playerName.Count() > 1);
         }
 
-        public List<Models.PlayerData> GetAllAuthorizedUsers(bool unauthorizedInstead = false)
+        public List<Models.PlayerModel> GetAllAuthorizedUsers(bool unauthorizedInstead = false)
         {
-            List<Models.PlayerData>? list = 
-                XmlContentData
+            return ConfigManager
                 .Instance
-                .PlayerData?
+                .Config
+                .Players
                 .FindAll(data => data.playerName.Count() > 1 && data.skipTimeLoop == !unauthorizedInstead);
-            return list ?? new List<Models.PlayerData>();
         }
         
         private List<ClientInfo> GetConnectedClients()
