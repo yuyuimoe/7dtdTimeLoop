@@ -2,26 +2,26 @@
 using TimeLoop.Enums;
 using TimeLoop.Helpers;
 using TimeLoop.Repositories;
-using ContentData = TimeLoop.Serializer.XmlContentData;
+using TimeLoop.Models;
 
 
 namespace TimeLoop.Modules
 {
     public class TimeLooper
     {
-        private readonly ContentData _contentData;
+        private readonly ConfigModel _config;
         private double _unscaledTimeStamp;
         public bool IsTimeFlowing { get; private set; } = true;
 
-        public TimeLooper(ContentData contentData)
+        public TimeLooper(ConfigModel config)
         {
-            _contentData = contentData;
+            _config = config;
         }
 
         public void UpdateLoopState()
         {
-            var plyDataRepo = new PlayerDataRepository(_contentData);
-            bool newState = _contentData.EnableTimeLooper && _contentData.Mode switch
+            var plyDataRepo = new PlayerRepository();
+            bool newState = _config.Enabled && _config.Mode switch
             {
                 EMode.Whitelist => plyDataRepo.IsAuthPlayerOnline(),
                 EMode.Threshold => plyDataRepo.IsMinPlayerThreshold(),

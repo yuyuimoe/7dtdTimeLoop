@@ -10,7 +10,7 @@ namespace TimeLoop
     public class Main : IModApi
     {
         public static TimeLooper _TimeLooper { get; private set; }
-        private XmlContentData _ContentData;
+        public const string ConfigFilePath = "Mods/TimeLoop/TimeLooper.xml";
 
         public static bool IsDedicatedServer() => GameManager.Instance && GameManager.IsDedicatedServer;
         
@@ -28,11 +28,7 @@ namespace TimeLoop
             if (!IsDedicatedServer())
                 return;
             
-            if (_ContentData)
-                return;
-
-            _ContentData = XmlContentData.DeserializeInstance();
-            _TimeLooper = new TimeLooper(_ContentData);
+            _TimeLooper = new TimeLooper(ConfigManager.Instance.Config);
         }
 
         private void Update()
@@ -40,14 +36,14 @@ namespace TimeLoop
             if (!IsDedicatedServer())
                 return;
             
-            _ContentData.CheckForUpdate();
-            if(_ContentData.EnableTimeLooper)
+            ConfigManager.Instance.UpdateFromFile();
+            if(ConfigManager.Instance.Config.Enabled)
                 _TimeLooper.CheckForTimeLoop();
         }
 
         private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation)
         {
-            if (!_ContentData.EnableTimeLooper)
+            if (!ConfigManager.Instance.Config.Enabled)
                 return;
                 
             if (respawnType != RespawnType.JoinMultiplayer)

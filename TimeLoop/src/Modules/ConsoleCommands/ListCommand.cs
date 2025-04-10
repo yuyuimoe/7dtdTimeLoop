@@ -27,7 +27,7 @@ tl_list <all/auth/unauth>:
             return "Lists all users in database";
         }
 
-        private string FormatPlayerList(List<Models.PlayerData> plyList)
+        private string FormatPlayerList(List<Models.PlayerModel> plyList)
         {
             if (plyList.Count == 0)
                 return "[TimeLoop] No users in database";
@@ -42,7 +42,7 @@ tl_list <all/auth/unauth>:
         {
             if (_params.Count == 0 || _params[0].ToLower() == "all")
             {
-                var playerDataRepository = new PlayerDataRepository(XmlContentData.Instance);
+                var playerDataRepository = new PlayerRepository();
                 string plyList = FormatPlayerList(playerDataRepository.GetAllUsers());
                 SdtdConsole.Instance.Output(plyList);
                 return;
@@ -61,7 +61,7 @@ tl_list <all/auth/unauth>:
                 return;
             }
             
-            var plyDataRepo = new PlayerDataRepository(XmlContentData.Instance);
+            var plyDataRepo = new PlayerRepository();
             bool unauthorizedInstead = arg.Equals("unauth");
             SdtdConsole.Instance.Output(FormatPlayerList(plyDataRepo.GetAllAuthorizedUsers(unauthorizedInstead)));
         }

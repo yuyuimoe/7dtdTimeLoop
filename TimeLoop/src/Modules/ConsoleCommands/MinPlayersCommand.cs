@@ -27,7 +27,7 @@ tl_minplayers <x>
         {
             if (_params.Count == 0)
             {
-                SdtdConsole.Instance.Output("[TimeLoop] Minimum required players: {0}", XmlContentData.Instance.MinPlayers);
+                SdtdConsole.Instance.Output("[TimeLoop] Minimum required players: {0}", ConfigManager.Instance.Config.MinPlayers);
                 return;
             }
             if (_params.Count != 1)
@@ -42,8 +42,8 @@ tl_minplayers <x>
                 return;
             }
             
-            XmlContentData.Instance.MinPlayers = newValue;
-            XmlContentData.Instance.SaveConfig();
+            ConfigManager.Instance.Config.MinPlayers = newValue;
+            ConfigManager.Instance.SaveToFile();
             Main._TimeLooper.UpdateLoopState();
             SdtdConsole.Instance.Output("[TimeLoop] Minimum player requirements changed to {0}", newValue);
         }

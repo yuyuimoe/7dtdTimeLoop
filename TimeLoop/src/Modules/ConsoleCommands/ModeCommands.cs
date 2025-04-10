@@ -31,7 +31,7 @@ tl_mode <0/1/2/3>
         {
             if (_params.Count == 0)
             {
-                SdtdConsole.Instance.Output("[TimeLoop] Current Mode: {0}", XmlContentData.Instance.Mode);
+                SdtdConsole.Instance.Output("[TimeLoop] Current Mode: {0}", ConfigManager.Instance.Config.Mode);
                 return;
             }
             
@@ -53,10 +53,10 @@ tl_mode <0/1/2/3>
                 return;
             }
             
-            XmlContentData.Instance.Mode = newMode;
-            XmlContentData.Instance.SaveConfig();
+            ConfigManager.Instance.Config.Mode = newMode;
+            ConfigManager.Instance.SaveToFile();
             Main._TimeLooper.UpdateLoopState();
-            SdtdConsole.Instance.Output("[TimeLoop] Mode changed to {0}.", XmlContentData.Instance.Mode);
+            SdtdConsole.Instance.Output("[TimeLoop] Mode changed to {0}.", ConfigManager.Instance.Config.Mode);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 namespace TimeLoop.Models
 {
     [Serializable]
-    public class PlayerData
+    public class PlayerModel
     {
 
         [FormerlySerializedAs("ID")] [XmlAttribute]
@@ -17,14 +17,14 @@ namespace TimeLoop.Models
         [FormerlySerializedAs("SkipTimeLoop")] [XmlAttribute]
         public bool skipTimeLoop;
 
-        public PlayerData()
+        public PlayerModel()
         {
             this.id = Guid.NewGuid().ToString();
             this.playerName = string.Empty;
             this.skipTimeLoop = false;
         }
         
-        public PlayerData(ClientInfo clientInfo)
+        public PlayerModel(ClientInfo clientInfo)
         {
             this.id = clientInfo.PlatformId.CombinedString;
             this.playerName = clientInfo.playerName;

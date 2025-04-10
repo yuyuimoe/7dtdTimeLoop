@@ -18,14 +18,14 @@ namespace TimeLoop.Patches
             Log.Out("[TimeLoop] Player logged in. Updating loop parameters.");
             Main._TimeLooper.UpdateLoopState();
             
-            var playerData = (new PlayerDataRepository(XmlContentData.Instance)).GetPlayerData(_clientInfo);
+            var playerData = new PlayerRepository().GetPlayerData(_clientInfo);
 
             if (playerData != null) 
                 return;
             
-            var plyData = new Models.PlayerData(_clientInfo);
-            XmlContentData.Instance.PlayerData.Add(plyData);
-            XmlContentData.Instance.SaveConfig();
+            var plyData = new Models.PlayerModel(_clientInfo);
+            ConfigManager.Instance.Config.Players.Add(plyData);
+            ConfigManager.Instance.SaveToFile();
             Log.Out($"[TimeLoop] Player added to config. {plyData.id}");
         }
     }
