@@ -8,13 +8,13 @@ namespace TimeLoop.Models
     [Serializable, XmlRoot("TimeLoopConfig")]
     public class ConfigModel
     {
-        [XmlAttribute("enabled")]
+        [XmlElement("Enabled", Type = typeof(bool), IsNullable = false, Order = 0)]
         public bool Enabled { get; set; }
-        [XmlAttribute("mode")]
+        [XmlElement("Mode", Type = typeof(EMode), IsNullable = false, Order = 1)]
         public EMode Mode { get; set; }
-        [XmlArray("Players")]
+        [XmlArray("Players", IsNullable = false, Order = 2)]
         public List<PlayerModel> Players { get; set; }
-        [XmlAttribute("minPlayers")]
+        [XmlElement("MinPlayers", Type = typeof(int) ,IsNullable = false, Order = 3)]
         public int MinPlayers { get; set; }
 
         public ConfigModel()

@@ -4,17 +4,17 @@ using UnityEngine.Serialization;
 
 namespace TimeLoop.Models
 {
-    [Serializable]
+    [Serializable, XmlRoot("Player")]
     public class PlayerModel
     {
 
-        [FormerlySerializedAs("ID")] [XmlAttribute]
+        [XmlAttribute("ID", Type = typeof(string))]
         public string id;
         
-        [FormerlySerializedAs("PlayerName")] [XmlAttribute]
+        [XmlAttribute("Name", typeof(string))]
         public string playerName;
         
-        [FormerlySerializedAs("SkipTimeLoop")] [XmlAttribute]
+        [XmlAttribute("Whitelisted", typeof(bool))]
         public bool skipTimeLoop;
 
         public PlayerModel()
