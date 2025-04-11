@@ -39,15 +39,27 @@ namespace TimeLoop.Managers
                         MessageHelper.SendGlobalChat("[TimeLoop] You seem to be stuck on the same day.");
                         break;
                     case true:
+                        if(ConfigManager.Instance.Config.DaysToSkip > 0)
+                            Log.Out("[TimeLoop] Resetting days to skip the loop.");
+                        ConfigManager.Instance.Config.DaysToSkip = 0;
+                        ConfigManager.Instance.SaveToFile();
                         MessageHelper.SendGlobalChat("[TimeLoop] Time flows normally.");
                         break;
                 }
 
                 IsTimeFlowing = newState;
             }
-            Log.Out("[TimeLoop] Is time flowing? " + IsTimeFlowing);
+            Log.Out($"[TimeLoop] Is Time Flowing? {IsTimeFlowing} | Days to skip: {ConfigManager.Instance.Config.DaysToSkip}");
         }
 
+        private bool IsDaySkippable()
+        {
+            if (IsTimeFlowing)
+                return true;
+            
+            return ConfigManager.Instance.Config.DaysToSkip > 0;
+        }
+        
         public void CheckForTimeLoop()
         {
             if (Math.Abs(_unscaledTimeStamp - UnityEngine.Time.unscaledTimeAsDouble) <= 0.1)
@@ -61,6 +73,15 @@ namespace TimeLoop.Managers
 
             if (dayTime <= 10)
             {
+                if (IsDaySkippable())
+                {
+                    GameManager.Instance.World.worldTime += 20;
+                    MessageHelper.SendGlobalChat("[TimeLoop] Skipping the loop for today.");
+                    if (ConfigManager.Instance.DecreaseDaysToSkip() > 0)
+                        MessageHelper.SendGlobalChat($"[TimeLoop] The following {ConfigManager.Instance.Config.DaysToSkip} day(s) will NOT loop");
+                    Log.Out("[TimeLoop] Skipping the loop for day. Remaining: {0} days", ConfigManager.Instance.Config.DaysToSkip);
+                    return;
+                }
                 Log.Out("[TimeLoop] Time Reset.");
                 MessageHelper.SendGlobalChat("[TimeLoop] Resetting day");
                 var previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;

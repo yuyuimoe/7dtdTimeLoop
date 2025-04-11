@@ -85,6 +85,15 @@ namespace TimeLoop.Managers
             this._lastModified = new FileInfo(this._absoluteFilePath).LastWriteTime;
         }
 
+        public int DecreaseDaysToSkip()
+        {
+            if (Config.DaysToSkip == 0)
+                return 0;
+            Config.DaysToSkip--;
+            SaveToFile();
+            return Config.DaysToSkip;
+        }
+
         public static implicit operator bool(ConfigManager? instance) => instance != null;
     }
 }

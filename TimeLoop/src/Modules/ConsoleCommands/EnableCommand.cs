@@ -32,7 +32,7 @@ tl_enable <0/1>
             }
             if (_params.Count > 1)
             {
-                SdtdConsole.Instance.Output("[TimeLoop] Wrong number of arguments. Excepted 0, found {0}.", _params.Count);
+                SdtdConsole.Instance.Output("[TimeLoop] Wrong number of arguments. Excepted 1, found {0}.", _params.Count);
                 return;
             }
 
