@@ -21,7 +21,7 @@ namespace TimeLoop.Managers
         public bool IsTimeFlowing { get; private set; } = true;
         private bool IsDaySkippable() => !IsTimeFlowing && ConfigManager.Instance.Config.DaysToSkip > 0;
 
-        private bool IsLoopLimitReached() => ConfigManager.Instance.Config.LoopLimit > this._timesLooped && ConfigManager.Instance.Config.LoopLimit != 0;
+        private bool IsLoopLimitReached() => this._timesLooped >= ConfigManager.Instance.Config.LoopLimit && ConfigManager.Instance.Config.LoopLimit != 0;
 
         public void UpdateLoopState()
         {
@@ -83,6 +83,7 @@ namespace TimeLoop.Managers
             if (!IsLoopLimitReached())
             {
                 LoopDay();
+                this._timesLooped++;
                 return;
             }
             Log.Out("[TimeLoop] Loop limit reached.");
