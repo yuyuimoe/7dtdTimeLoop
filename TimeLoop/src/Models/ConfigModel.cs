@@ -18,6 +18,8 @@ namespace TimeLoop.Models
         public int MinPlayers { get; set; }
         [XmlElement("DaysToSkip")]
         public int DaysToSkip { get; set; }
+        [XmlElement("LoopLimit")]
+        public int LoopLimit { get; set; }
 
         public ConfigModel()
         {
@@ -26,15 +28,17 @@ namespace TimeLoop.Models
             this.Players = new List<PlayerModel>();
             this.MinPlayers = 5;
             this.DaysToSkip = 0;
+            this.LoopLimit = 0;
         }
 
-        public ConfigModel(bool enabled, EMode mode, List<PlayerModel> players, int minPlayers, int daysToSkip)
+        public ConfigModel(bool enabled, EMode mode, List<PlayerModel> players, int minPlayers, int daysToSkip, int loopLimit)
         {
             this.Enabled = enabled;
             this.Mode = mode;
             this.Players = players;
             this.MinPlayers = minPlayers;
             this.DaysToSkip = daysToSkip;
+            this.LoopLimit = loopLimit;
         }
     }
 }
