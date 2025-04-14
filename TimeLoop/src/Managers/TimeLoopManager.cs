@@ -17,7 +17,11 @@ namespace TimeLoop.Managers
         #endregion
         
         private double _unscaledTimeStamp;
+        private int _timesLooped = 0;
         public bool IsTimeFlowing { get; private set; } = true;
+        private bool IsDaySkippable() => !IsTimeFlowing && ConfigManager.Instance.Config.DaysToSkip > 0;
+
+        private bool IsLoopLimitReached() => ConfigManager.Instance.Config.LoopLimit > this._timesLooped && ConfigManager.Instance.Config.LoopLimit != 0;
 
         public void UpdateLoopState()
         {
@@ -52,13 +56,41 @@ namespace TimeLoop.Managers
             Log.Out($"[TimeLoop] Is Time Flowing? {IsTimeFlowing} | Days to skip: {ConfigManager.Instance.Config.DaysToSkip}");
         }
 
-        private bool IsDaySkippable()
+        private void SkipLoop()
         {
-            if (IsTimeFlowing)
-                return true;
-            
-            return ConfigManager.Instance.Config.DaysToSkip > 0;
+            GameManager.Instance.World.worldTime += 20;
+            MessageHelper.SendGlobalChat("[TimeLoop] Skipping the loop for today.");
+            if (ConfigManager.Instance.DecreaseDaysToSkip() > 0)
+                MessageHelper.SendGlobalChat($"[TimeLoop] The following {ConfigManager.Instance.Config.DaysToSkip} day(s) will NOT loop");
+            Log.Out("[TimeLoop] Skipping the loop for day. Remaining: {0} days", ConfigManager.Instance.Config.DaysToSkip);
         }
+        
+        private void LoopDay()
+        {
+            if (IsDaySkippable())
+            {
+                SkipLoop();
+                return;
+            }
+            Log.Out("[TimeLoop] Time Reset.");
+            MessageHelper.SendGlobalChat("[TimeLoop] Resetting day");
+            var previousDay = GameUtils.WorldTimeToDays(GameManager.Instance.World.GetWorldTime()) - 1;
+            GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 20);
+        }
+        
+        private void LimitedLoop()
+        {
+            if (!IsLoopLimitReached())
+            {
+                LoopDay();
+                return;
+            }
+            Log.Out("[TimeLoop] Loop limit reached.");
+            MessageHelper.SendGlobalChat("[TimeLoop] Loop limit reached.");
+            SkipLoop();
+        }
+        
+        
         
         public void CheckForTimeLoop()
         {
@@ -67,31 +99,18 @@ namespace TimeLoop.Managers
 
             if (IsTimeFlowing)
                 return;
-            
+
             var worldTime = GameManager.Instance.World.GetWorldTime();
             var dayTime = worldTime % 24000;
 
             if (dayTime <= 10)
             {
-                if (IsDaySkippable())
-                {
-                    GameManager.Instance.World.worldTime += 20;
-                    MessageHelper.SendGlobalChat("[TimeLoop] Skipping the loop for today.");
-                    if (ConfigManager.Instance.DecreaseDaysToSkip() > 0)
-                        MessageHelper.SendGlobalChat($"[TimeLoop] The following {ConfigManager.Instance.Config.DaysToSkip} day(s) will NOT loop");
-                    Log.Out("[TimeLoop] Skipping the loop for day. Remaining: {0} days", ConfigManager.Instance.Config.DaysToSkip);
-                    return;
-                }
-                Log.Out("[TimeLoop] Time Reset.");
-                MessageHelper.SendGlobalChat("[TimeLoop] Resetting day");
-                var previousDay = GameUtils.WorldTimeToDays(worldTime) - 1;
-                GameManager.Instance.World.SetTime(GameUtils.DaysToWorldTime(previousDay) + 20);
+                LimitedLoop();
             }
-            
             _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;
         }
 
-        public static implicit operator bool(TimeLoopManager instance)
+        public static implicit operator bool(TimeLoopManager? instance)
         {
             return instance != null;
         }
