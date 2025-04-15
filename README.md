@@ -34,27 +34,40 @@ Here's an example of the configuration file:
 
 ## Console commands
 **v2.2.0 or greater required**
-- tl_enable <0/1> - Enables or Disables the Mod<br>
-  0 - Disable<br>
+```
+tl_enable <0/1> - Enables or Disables the Mod
+  0 - Disable
   1 - Enable
-- tl_mode <0/1/2/3> - Changes the mode.<br>
-  0 - Always.<br>
-  1 - Whitelist<br>
-  2 - Threshold<br>
+
+tl_mode <0/1/2/3> - Changes the mode.
+  0 - Always.
+  1 - Whitelist
+  2 - Threshold
   3 - Whitelisted Threshold
-- tl_auth <platform_id/player_name> <0/1> - (Un)authorizes a player.<br>
-  (Whitelist or Whitelisted Threshold only)<br>
-  platform_id/player_name - Player that will get their authorization status changed.<br>
-  0 - Unauthorize<br>
+
+tl_auth <platform_id/player_name> <0/1> - (Un)authorizes a player.
+  (Whitelist or Whitelisted Threshold only)
+  platform_id/player_name - Player that will get their authorization status changed.
+  0 - Unauthorize
   1 - Authorize
-- tl_minplayers <x> Changes the minimum amount of players required to pass time.<br>
-  (Threshold or Whitelisted Threshold only)<br>
-  x - New amount of players
-- tl_list <all/auth/unauth> - Lists the players registed in the database<br>
-  all - Shows all players<br>
-  auth - Shows all authorized players<br>
+
+tl_minplayers <amount> - Changes the minimum amount of players required to pass time.
+  (Threshold or Whitelisted Threshold only)
+  <amount> - New amount of players
+ 
+tl_list <all/auth/unauth> - Lists the players registed in the database
+  all - Shows all players
+  auth - Shows all authorized players
   unauth - Shows all unauthorized players
-- tl_ll <days> - 
+
+tl_ll <amount> - Limit the amount of loops a day can have.
+    <amount> - The amount of loops a day can have. 0 to loop indefinitely.
+
+tl_skipdays <days> - Skip the looping for N amount of days.
+    <days> - The amount of days to skip looping.
+
+tl_state - Displays if the current day will loop or not.
+```
 
 ## Building
 You need:
