@@ -3,33 +3,34 @@ using TimeLoop.Managers;
 
 namespace TimeLoop.Modules.ConsoleCommands
 {
-    public class EnableCommand : ConsoleCmdAbstract
+    public class LoopLimitCommand : ConsoleCmdAbstract
     {
         public override string getHelp()
         {
             return @"Usage:
-tl_enable <0/1>
-    0 - Disables the mod.
-    1 - Enables the mod.";
+tl_looplimit <amount>
+    <amount> - The amount of loops a day can have. 0 to loop indefinitely.";
         }
         
         public override string[] getCommands()
         {
-            return new[] { "tl_enable", "timeloop_enable", "timeloop" };
+            return new string[] { "tl_ll", "tl_looplimit", "timeloop_looplimit" };
         }
 
         public override string getDescription()
         {
-            return "[TimeLoop] Enables or disables the mod";
+            return "[TimeLoop] Limit the amount of loops a day can have.";
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
         {
             if (_params.Count == 0)
             {
-                SdtdConsole.Instance.Output("[TimeLoop] Is Mod Enabled? {0}", ConfigManager.Instance.Config.Enabled);
+                string loopLimit = ConfigManager.Instance.Config.LoopLimit > 0 ? ConfigManager.Instance.Config.LoopLimit.ToString() : "Infinite";
+                SdtdConsole.Instance.Output("[TimeLoop] Current loop limit is {0}", loopLimit);
                 return;
             }
+
             if (_params.Count > 1)
             {
                 SdtdConsole.Instance.Output("[TimeLoop] Wrong number of arguments. Excepted 1, found {0}.", _params.Count);
@@ -41,12 +42,11 @@ tl_enable <0/1>
                 SdtdConsole.Instance.Output("[TimeLoop] Invalid parameter type. Expected integer, received {0}", _params[0].GetType());
                 return;
             }
-
-            ConfigManager.Instance.Config.Enabled = newValue >= 1;
+            
+            ConfigManager.Instance.Config.LoopLimit = newValue;
             ConfigManager.Instance.SaveToFile();
             TimeLoopManager.Instance.UpdateLoopState();
-            string newState = ConfigManager.Instance.Config.Enabled ? "Enabled" : "Disabled";
-            SdtdConsole.Instance.Output("[TimeLoop] Time Looper has been {0}", newState);
+            SdtdConsole.Instance.Output("[TimeLoop] Loop limit set to {0}", newValue);
         }
     }
 }

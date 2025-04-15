@@ -26,7 +26,8 @@ namespace TimeLoop.Managers
             _absoluteFilePath = GetAbsolutePath(fileLocation);
             Config = LoadConfig();
         }
-        
+
+        public bool IsLoopLimitEnabled => this.Config.LoopLimit > 0;
         private bool IsFileModified() => this._lastModified != new FileInfo(this._absoluteFilePath).LastWriteTime;
         
         private string GetAbsolutePath(string relativeFilePath)
@@ -83,6 +84,15 @@ namespace TimeLoop.Managers
             
             XmlSerializerWrapper.ToXml(this._absoluteFilePath, this.Config);
             this._lastModified = new FileInfo(this._absoluteFilePath).LastWriteTime;
+        }
+
+        public int DecreaseDaysToSkip()
+        {
+            if (Config.DaysToSkip == 0)
+                return 0;
+            Config.DaysToSkip--;
+            SaveToFile();
+            return Config.DaysToSkip;
         }
 
         public static implicit operator bool(ConfigManager? instance) => instance != null;
