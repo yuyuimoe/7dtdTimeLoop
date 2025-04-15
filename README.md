@@ -24,6 +24,10 @@ Here's an example of the configuration file:
   </Players>
   <!-- In threshold mode, change the value below to set the amount of minimum players -->
   <MinPlayers>1</MinPlayers>
+  <!-- Skip looping for x amount of days. 0 to disable -->
+  <DaysToSkip>0</DaysToSkip>
+  <!-- Limit max loops per day. 0 to unlimited loops -->
+  <LoopLimit>0</LoopLimit>
   <!-- That's it, you're done. -->
 </TimeLoopConfig>
 ```
@@ -50,6 +54,7 @@ Here's an example of the configuration file:
   all - Shows all players<br>
   auth - Shows all authorized players<br>
   unauth - Shows all unauthorized players
+- tl_ll <days> - 
 
 ## Building
 You need:
