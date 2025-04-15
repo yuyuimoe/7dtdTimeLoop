@@ -21,7 +21,7 @@ namespace TimeLoop.Managers
         public bool IsTimeFlowing { get; private set; } = true;
         private bool IsDaySkippable() => !IsTimeFlowing && ConfigManager.Instance.Config.DaysToSkip > 0;
 
-        private bool IsLoopLimitReached() => this._timesLooped >= ConfigManager.Instance.Config.LoopLimit && ConfigManager.Instance.Config.LoopLimit != 0;
+        private bool IsLoopLimitReached() => this._timesLooped >= ConfigManager.Instance.Config.LoopLimit && ConfigManager.Instance.IsLoopLimitEnabled;
 
         public void UpdateLoopState()
         {
@@ -58,8 +58,9 @@ namespace TimeLoop.Managers
 
         private void SkipLoop()
         {
+            this._timesLooped = 0;
             GameManager.Instance.World.worldTime += 20;
-            MessageHelper.SendGlobalChat("[TimeLoop] Skipping the loop for today.");
+            MessageHelper.SendGlobalChat("[TimeLoop] Skipping the loop.");
             if (ConfigManager.Instance.DecreaseDaysToSkip() > 0)
                 MessageHelper.SendGlobalChat($"[TimeLoop] The following {ConfigManager.Instance.Config.DaysToSkip} day(s) will NOT loop");
             Log.Out("[TimeLoop] Skipping the loop for day. Remaining: {0} days", ConfigManager.Instance.Config.DaysToSkip);
@@ -84,6 +85,7 @@ namespace TimeLoop.Managers
             {
                 LoopDay();
                 this._timesLooped++;
+                Log.Out("[TimeLoop] Loops: {0}/{1}", this._timesLooped, ConfigManager.Instance.Config.LoopLimit);
                 return;
             }
             Log.Out("[TimeLoop] Loop limit reached.");
@@ -106,6 +108,11 @@ namespace TimeLoop.Managers
 
             if (dayTime <= 10)
             {
+                if (!ConfigManager.Instance.IsLoopLimitEnabled)
+                {
+                    LoopDay();
+                    return;
+                }
                 LimitedLoop();
             }
             _unscaledTimeStamp = UnityEngine.Time.unscaledTimeAsDouble;

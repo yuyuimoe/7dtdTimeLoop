@@ -26,7 +26,8 @@ namespace TimeLoop.Managers
             _absoluteFilePath = GetAbsolutePath(fileLocation);
             Config = LoadConfig();
         }
-        
+
+        public bool IsLoopLimitEnabled => this.Config.LoopLimit > 0;
         private bool IsFileModified() => this._lastModified != new FileInfo(this._absoluteFilePath).LastWriteTime;
         
         private string GetAbsolutePath(string relativeFilePath)
