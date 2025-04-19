@@ -1,18 +1,17 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using HarmonyLib;
 using TimeLoop.Helpers;
 using TimeLoop.Managers;
+using UnityEngine;
 
-namespace TimeLoop
-{
-    public class Main : IModApi
-    {
+namespace TimeLoop {
+    public class Main : IModApi {
         public const string ConfigFilePath = "Mods/TimeLoop/TimeLooper.xml";
+        public const string LocaleFolderPath = "Mods/TimeLoop/i18n/";
 
-        public static bool IsDedicatedServer() => GameManager.Instance && GameManager.IsDedicatedServer;
-        
-        public void InitMod(Mod _modInstance)
-        {
+        public void InitMod(Mod _modInstance) {
             Log.Out("[TimeLoop] Initializing ...");
             ModEvents.GameAwake.RegisterHandler(Awake);
             ModEvents.GameUpdate.RegisterHandler(Update);
@@ -20,8 +19,21 @@ namespace TimeLoop
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
         }
 
-        private void Awake()
-        {
+        public static string GetAbsolutePath(string relativeFilePath) {
+            var gameDirectory = Directory.GetParent(Application.dataPath)?.FullName;
+            if (gameDirectory == null) {
+                Log.Exception(new Exception("Game directory could not be found."));
+                throw new Exception("Game directory could not be found.");
+            }
+
+            return Path.Combine(gameDirectory, relativeFilePath);
+        }
+
+        public static bool IsDedicatedServer() {
+            return GameManager.Instance && GameManager.IsDedicatedServer;
+        }
+
+        private void Awake() {
             if (!IsDedicatedServer())
                 return;
 
@@ -29,27 +41,25 @@ namespace TimeLoop
             TimeLoopManager.Instantiate();
         }
 
-        private void Update()
-        {
+        private void Update() {
             if (!IsDedicatedServer())
                 return;
-            
+
             ConfigManager.Instance.UpdateFromFile();
-            if(ConfigManager.Instance.Config.Enabled)
+            if (ConfigManager.Instance.Config.Enabled)
                 TimeLoopManager.Instance.CheckForTimeLoop();
         }
 
-        private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation)
-        {
+        private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation) {
             if (!ConfigManager.Instance.Config.Enabled)
                 return;
-                
+
             if (respawnType != RespawnType.JoinMultiplayer)
                 return;
-            
+
             if (TimeLoopManager.Instance.IsTimeFlowing)
                 return;
-            
+
             MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);
         }
     }
