@@ -12,8 +12,7 @@ namespace TimeLoop.Patches {
 
             if (_clientInfo.PlatformId == null)
                 return;
-
-            Log.Out("[TimeLoop] Player logged in. Updating loop parameters.");
+            Log.Out(LocaleManager.Instance.LocalizeWithPrefix("log_player_connected"));
             TimeLoopManager.Instance.UpdateLoopState();
 
             var playerData = new PlayerRepository().GetPlayerData(_clientInfo);
@@ -24,8 +23,8 @@ namespace TimeLoop.Patches {
             var plyData = new PlayerModel(_clientInfo);
             ConfigManager.Instance.Config.Players.Add(plyData);
             ConfigManager.Instance.SaveToFile();
-            //TODO: i18n has new arguments
-            Log.Out($"[TimeLoop] Player added to config. {plyData.id}");
+
+            Log.Out(LocaleManager.Instance.LocalizeWithPrefix("log_player_new", plyData.playerName, plyData.id));
         }
     }
 }

@@ -1,67 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using TimeLoop.Managers;
+using TimeLoop.Models;
 using TimeLoop.Repositories;
 using UniLinq;
 
-namespace TimeLoop.Modules.ConsoleCommands
-{
-    public class ListCommand : ConsoleCmdAbstract
-    {
-        public override string GetHelp()
-        {
-            return @"Usage:
-tl_list <all/auth/unauth>:
-    all - Lists all users in database
-    auth - Lists all authorized users
-    unauth - Lists all unauthorized users";
-        }
-        
-        public override string[] getCommands()
-        {
-            return new [] { "tl_list", "timeloop_list" };
+namespace TimeLoop.Modules.ConsoleCommands {
+    public class ListCommand : ConsoleCmdAbstract {
+        public override string GetHelp() {
+            return LocaleManager.Instance.Localize("cmd_list_help");
         }
 
-        public override string getDescription()
-        {
-            return "Lists all users in database";
+        public override string[] getCommands() {
+            return new[] { "tl_list", "timeloop_list" };
         }
 
-        private string FormatPlayerList(List<Models.PlayerModel> plyList)
-        {
+        public override string getDescription() {
+            return LocaleManager.Instance.LocalizeWithPrefix("cmd_list_desc");
+        }
+
+        private string FormatPlayerList(List<PlayerModel> plyList) {
             if (plyList.Count == 0)
-                return "[TimeLoop] No users in database";
-            
-            string formattedPlyList = string.Join(
+                return LocaleManager.Instance.Localize("cmd_list_no_users");
+
+            var formattedPlyList = string.Join(
                 Environment.NewLine,
-                plyList.Select(ply => $"Player: {ply.playerName}, Platform ID: {ply.id}, Authorized? {ply.skipTimeLoop}"));
-            return "[TimeLoop]" + formattedPlyList + Environment.NewLine + "Total: " + plyList.Count;
+                plyList.Select(
+                    ply => LocaleManager.Instance.Localize("cmd_list_format", ply.playerName, ply.id,
+                        ply.skipTimeLoop)));
+            return LocaleManager.Instance.LocalizeWithPrefix("cmd_list_return", formattedPlyList + Environment.NewLine,
+                plyList.Count);
         }
-        
-        public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
-        {
-            if (_params.Count == 0 || _params[0].ToLower() == "all")
-            {
+
+        public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
+            if (_params.Count == 0 || _params[0].ToLower() == "all") {
                 var playerDataRepository = new PlayerRepository();
-                string plyList = FormatPlayerList(playerDataRepository.GetAllUsers());
+                var plyList = FormatPlayerList(playerDataRepository.GetAllUsers());
                 SdtdConsole.Instance.Output(plyList);
                 return;
             }
 
-            if (_params.Count != 1)
-            {
-                SdtdConsole.Instance.Output("[TimeLoop] Invalid number of arguments. Expected 1, received {0}.", _params.Count);
+            if (_params.Count != 1) {
+                SdtdConsole.Instance.Output(
+                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 1, _params.Count));
                 return;
             }
-            
-            string arg = _params[0].ToLower();
-            if (!(arg.Contains("auth") || arg.Contains("unauth")))
-            {
-                SdtdConsole.Instance.Output("[TimeLoop] Invalid arguments. Expected 'auth', 'unauth' or 'all', received {0}.", _params[0]);
+
+            var arg = _params[0].ToLower();
+            if (!(arg.Contains("auth") || arg.Contains("unauth"))) {
+                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param",
+                    "auth, unauth, or all", _params[0]));
                 return;
             }
-            
+
             var plyDataRepo = new PlayerRepository();
-            bool unauthorizedInstead = arg.Equals("unauth");
+            var unauthorizedInstead = arg.Equals("unauth");
             SdtdConsole.Instance.Output(FormatPlayerList(plyDataRepo.GetAllAuthorizedUsers(unauthorizedInstead)));
         }
     }

@@ -17,6 +17,7 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DefineConstants>$(DefineConstants)</DefineConstants>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,8 +38,8 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="src\Modules\Localization\"/>
-    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy /s /y $(ProjectDir)\resources $(OutDir)"/>
+    </Target>
 
 </Project>

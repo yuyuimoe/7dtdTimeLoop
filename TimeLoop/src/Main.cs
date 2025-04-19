@@ -39,6 +39,7 @@ namespace TimeLoop {
 
             ConfigManager.Instantiate();
             TimeLoopManager.Instantiate();
+            LocaleManager.Instantiate(ConfigManager.Instance.Config.Language);
         }
 
         private void Update() {
@@ -60,7 +61,7 @@ namespace TimeLoop {
             if (TimeLoopManager.Instance.IsTimeFlowing)
                 return;
 
-            MessageHelper.SendPrivateChat("[TimeLoop] TimeLoop is active. Day will reset at midnight.", clientInfo);
+            MessageHelper.SendPrivateChat(LocaleManager.Instance.Localize("onlogin_timeloop_active"), clientInfo);
         }
     }
 }

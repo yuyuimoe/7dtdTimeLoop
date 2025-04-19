@@ -49,7 +49,7 @@ namespace TimeLoop.Managers {
                 return;
 
             XmlSerializerWrapper.FromXmlOverwrite(_absoluteFilePath, Config);
-            Log.Out("[TimeLoop] Configuration updated.");
+            Log.Out(LocaleManager.Instance.LocalizeWithPrefix("log_updated_config"));
             TimeLoopManager.Instance.UpdateLoopState();
         }
 

@@ -5,8 +5,8 @@ using static SimpleJson2.SimpleJson2;
 
 namespace TimeLoop.Managers {
     public class LocaleManager {
-        private bool _isFallbackMode = false;
-        private List<string> _localeJson;
+        private bool _isFallbackMode;
+        private Dictionary<string, string> _localeDict = null!;
 
         private LocaleManager(string locale = "en_us") {
             LoadLocale(locale);
@@ -20,28 +20,46 @@ namespace TimeLoop.Managers {
             try {
                 var localePath = Main.GetAbsolutePath(Path.Combine(Main.LocaleFolderPath, locale + ".json"));
                 using var stream = new StreamReader(localePath);
-                _localeJson = DeserializeObject<List<string>>(stream.ReadToEnd());
+                _localeDict = DeserializeObject<Dictionary<string, string>>(stream.ReadToEnd());
+                stream.Close();
             }
             catch (Exception e) {
-                Log.Error("[TimeLoop] Failed to load localization file.");
+                Log.Error("[TimeLoop] Failed to load localization file. {0}", e.Message);
+#if DEBUG
+                Log.Exception(e);
+#endif
                 _isFallbackMode = true;
+                _localeDict = new Dictionary<string, string>();
             }
         }
 
-        public string Translate(string key, params object[] args) {
-            if (_isFallbackMode || !_localeJson.Contains(key)) return string.Join(" ", key, args);
-            return string.Format(_localeJson.Find(s => s.Equals(key)), args);
+        public string Localize(string key) {
+            if (_isFallbackMode || !_localeDict.TryGetValue(key, out var locale)) return key;
+
+            return locale;
+        }
+
+        public string Localize(string key, params object[] args) {
+            return string.Format(Localize(key), args);
+        }
+
+        public string LocalizeWithPrefix(string key) {
+            return string.Join(Localize("prefix"), Localize(key));
+        }
+
+        public string LocalizeWithPrefix(string key, params object[] args) {
+            return string.Join(Localize("prefix"), Localize(key, args));
         }
 
         #region Singleton
 
-        private static LocaleManager _instance;
+        private static LocaleManager? _instance;
 
         public static LocaleManager Instance {
             get { return _instance ??= new LocaleManager(); }
         }
 
-        public void Instantiate(string locale) {
+        public static void Instantiate(string locale) {
             _instance = new LocaleManager(locale);
         }
 
