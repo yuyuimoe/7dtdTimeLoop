@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TimeLoop.Enums;
+using TimeLoop.Helpers;
 using TimeLoop.Managers;
 
 namespace TimeLoop.Modules.ConsoleCommands {
@@ -25,18 +26,8 @@ namespace TimeLoop.Modules.ConsoleCommands {
                 return;
             }
 
-            if (_params.Count != 1) {
-                SdtdConsole.Instance.Output(
-                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 1, _params.Count));
-                return;
-            }
-
-            if (!int.TryParse(_params[0], out var mode)) {
-                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_type", 1,
-                    typeof(int),
-                    _params[0].GetType()));
-                return;
-            }
+            if (!CommandHelper.ValidateCount(_params, 1)) return;
+            if (!CommandHelper.ValidateType(_params[0], 1, out int mode)) return;
 
             if (!Enum.TryParse<EMode>(mode.ToString(), out var newMode)) {
                 SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_mode_invalid_mode"));

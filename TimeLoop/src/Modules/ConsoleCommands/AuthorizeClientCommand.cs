@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TimeLoop.Helpers;
 using TimeLoop.Managers;
 using TimeLoop.Repositories;
 
@@ -17,17 +18,8 @@ namespace TimeLoop.Modules.ConsoleCommands {
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
-            if (_params.Count != 2) {
-                SdtdConsole.Instance.Output(
-                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 2, _params.Count));
-                return;
-            }
-
-            if (!int.TryParse(_params[1], out var newValue)) {
-                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_type", 2,
-                    typeof(int), _params[1].GetType()));
-                return;
-            }
+            if (!CommandHelper.ValidateCount(_params, 2)) return;
+            if (!CommandHelper.ValidateType(_params[1], 2, out int newValue)) return;
 
             var playerDataRepository = new PlayerRepository();
             var playerData = playerDataRepository.GetPlayerDataNameOrId(_params[0]);

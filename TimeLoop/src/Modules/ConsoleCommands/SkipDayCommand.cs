@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TimeLoop.Helpers;
 using TimeLoop.Managers;
 
 namespace TimeLoop.Modules.ConsoleCommands {
@@ -8,7 +9,7 @@ namespace TimeLoop.Modules.ConsoleCommands {
         }
 
         public override string[] getCommands() {
-            return new[] { "tk_skipdays", "timeloop_skipdays" };
+            return new[] { "tl_skipdays", "timeloop_skipdays" };
         }
 
         public override string getDescription() {
@@ -28,17 +29,8 @@ namespace TimeLoop.Modules.ConsoleCommands {
                 return;
             }
 
-            if (_params.Count > 1) {
-                SdtdConsole.Instance.Output(
-                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 1, _params.Count));
-                return;
-            }
-
-            if (!int.TryParse(_params[0], out var days)) {
-                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_type",
-                    typeof(int), _params[0].GetType()));
-                return;
-            }
+            if (!CommandHelper.ValidateCount(_params, 1)) return;
+            if (!CommandHelper.ValidateType(_params[0], 1, out int days)) return;
 
             ConfigManager.Instance.Config.DaysToSkip = days;
             ConfigManager.Instance.SaveToFile();

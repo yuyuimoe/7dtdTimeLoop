@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TimeLoop.Helpers;
 using TimeLoop.Managers;
 
 namespace TimeLoop.Modules.ConsoleCommands {
@@ -22,17 +23,8 @@ namespace TimeLoop.Modules.ConsoleCommands {
                 return;
             }
 
-            if (_params.Count != 1) {
-                SdtdConsole.Instance.Output(
-                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 1, _params.Count));
-                return;
-            }
-
-            if (!int.TryParse(_params[0], out var newValue)) {
-                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_type",
-                    typeof(int), _params[0].GetType()));
-                return;
-            }
+            if (!CommandHelper.ValidateCount(_params, 1)) return;
+            if (!CommandHelper.ValidateType(_params[0], 1, out int newValue)) return;
 
             ConfigManager.Instance.Config.MinPlayers = newValue;
             ConfigManager.Instance.SaveToFile();

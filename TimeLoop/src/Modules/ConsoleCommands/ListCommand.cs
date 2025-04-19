@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TimeLoop.Helpers;
 using TimeLoop.Managers;
 using TimeLoop.Models;
 using TimeLoop.Repositories;
@@ -33,6 +34,8 @@ namespace TimeLoop.Modules.ConsoleCommands {
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
+            object[] validParams = { "auth", "unauth", "all" };
+
             if (_params.Count == 0 || _params[0].ToLower() == "all") {
                 var playerDataRepository = new PlayerRepository();
                 var plyList = FormatPlayerList(playerDataRepository.GetAllUsers());
@@ -40,21 +43,11 @@ namespace TimeLoop.Modules.ConsoleCommands {
                 return;
             }
 
-            if (_params.Count != 1) {
-                SdtdConsole.Instance.Output(
-                    LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param_count", 1, _params.Count));
-                return;
-            }
-
-            var arg = _params[0].ToLower();
-            if (!(arg.Contains("auth") || arg.Contains("unauth"))) {
-                SdtdConsole.Instance.Output(LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param",
-                    "auth, unauth, or all", _params[0]));
-                return;
-            }
+            if (!CommandHelper.ValidateCount(_params, 1)) return;
+            if (!CommandHelper.HasValue(_params[0].ToLower(), validParams)) return;
 
             var plyDataRepo = new PlayerRepository();
-            var unauthorizedInstead = arg.Equals("unauth");
+            var unauthorizedInstead = _params[0].ToLower().Equals("unauth");
             SdtdConsole.Instance.Output(FormatPlayerList(plyDataRepo.GetAllAuthorizedUsers(unauthorizedInstead)));
         }
     }
