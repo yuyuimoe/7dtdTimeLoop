@@ -1,10 +1,13 @@
 # TimeLoop
+
 A mod that allows you to loop time while certain players are not in the server.
 
 ## Configuration
+
 The configuration file gets generated when you launch the mod for the first time.
 
 Here's an example of the configuration file:
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <TimeLoopConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -28,12 +31,16 @@ Here's an example of the configuration file:
   <DaysToSkip>0</DaysToSkip>
   <!-- Limit max loops per day. 0 to unlimited loops -->
   <LoopLimit>0</LoopLimit>
+  <!-- Global language for the mod. Check the i18n folder for available languages -->
+  <Language>en_us</Language>
   <!-- That's it, you're done. -->
 </TimeLoopConfig>
 ```
 
 ## Console commands
+
 **v2.2.0 or greater required**
+
 ```
 tl_enable <0/1> - Enables or Disables the Mod
   0 - Disable
@@ -67,18 +74,25 @@ tl_skipdays <days> - Skip the looping for N amount of days.
     <days> - The amount of days to skip looping.
 
 tl_state - Displays if the current day will loop or not.
+
+tl_locale <locale> - Changes the current language.
+    <locale> - The locale available in i18n folder, without .json.
 ```
 
 ## Building
+
 You need:
+
 - Windows 10 or greater
 - Any C#/.NET IDE
 - .NET Framework 4.8 SDK
 - 7 Days to Die installation
 
 ### Get the DLLs
+
 Check the README on the `depts` folder.
 
 ### Change build folder
+
 1. Open `TimeLoop.proj` on a text editor
 2. Change `BaseOutputPath` and `OutputPath` to your desired path

@@ -3,60 +3,37 @@ using System.IO;
 using System.Xml;
 using TimeLoop.Models;
 using TimeLoop.Wrappers;
-using UnityEngine;
 
-namespace TimeLoop.Managers
-{
-    public class ConfigManager
-    {
-        #region Singleton
-        private static ConfigManager? _instance;
-        public static ConfigManager Instance{
-            get { return _instance ??= new ConfigManager(Main.ConfigFilePath); }
-        }
-        public static void Instantiate() => _instance = new ConfigManager(Main.ConfigFilePath);
-        #endregion
-        
-        public ConfigModel Config { get; private set; }
+namespace TimeLoop.Managers {
+    public class ConfigManager {
         private readonly string _absoluteFilePath;
         private DateTime _lastModified = new DateTime(1970, 1, 1);
-        
-        private ConfigManager(string fileLocation)
-        {
-            _absoluteFilePath = GetAbsolutePath(fileLocation);
+
+        private ConfigManager(string fileLocation) {
+            _absoluteFilePath = Main.GetAbsolutePath(fileLocation);
             Config = LoadConfig();
         }
 
-        public bool IsLoopLimitEnabled => this.Config.LoopLimit > 0;
-        private bool IsFileModified() => this._lastModified != new FileInfo(this._absoluteFilePath).LastWriteTime;
-        
-        private string GetAbsolutePath(string relativeFilePath)
-        {
-            string? gameDirectory = Directory.GetParent(Application.dataPath)?.FullName;
-            if (gameDirectory == null)
-            {
-                Log.Exception(new Exception("Game directory could not be found."));
-                return "";
-            }
-            return Path.Combine(gameDirectory, relativeFilePath);
+        public ConfigModel Config { get; }
+
+        public bool IsLoopLimitEnabled => Config.LoopLimit > 0;
+
+        private bool IsFileModified() {
+            return _lastModified != new FileInfo(_absoluteFilePath).LastWriteTime;
         }
-        
-        private ConfigModel LoadConfig()
-        {
-            ConfigModel configModel = new ConfigModel();
-            try
-            {
+
+        private ConfigModel LoadConfig() {
+            var configModel = new ConfigModel();
+            try {
                 Log.Out("[TimeLoop] Loading configuration file...");
                 configModel = XmlSerializerWrapper.FromXml<ConfigModel>(_absoluteFilePath);
             }
-            catch (Exception e) when (e is FileNotFoundException || e is XmlException)
-            {
+            catch (Exception e) when (e is FileNotFoundException || e is XmlException) {
                 Log.Error("[TimeLoop] Configuration file is either corrupt or does not exist.");
                 Log.Out("[TimeLoop] Creating a configuration file");
                 XmlSerializerWrapper.ToXml(_absoluteFilePath, configModel);
             }
-            finally
-            {
+            finally {
                 _lastModified = new FileInfo(_absoluteFilePath).LastWriteTime;
                 Log.Out("[TimeLoop] Configuration loaded.");
             }
@@ -64,30 +41,27 @@ namespace TimeLoop.Managers
             return configModel;
         }
 
-        public void UpdateFromFile()
-        {
+        public void UpdateFromFile() {
             if (!File.Exists(_absoluteFilePath))
                 return;
-            
-            if (!this.IsFileModified())
+
+            if (!IsFileModified())
                 return;
-            
-            XmlSerializerWrapper.FromXmlOverwrite(this._absoluteFilePath, this.Config);
-            Log.Out("[TimeLoop] Configuration updated.");
+
+            XmlSerializerWrapper.FromXmlOverwrite(_absoluteFilePath, Config);
+            Log.Out(LocaleManager.Instance.LocalizeWithPrefix("log_updated_config"));
             TimeLoopManager.Instance.UpdateLoopState();
         }
 
-        public void SaveToFile()
-        {
-            if (!File.Exists(this._absoluteFilePath))
+        public void SaveToFile() {
+            if (!File.Exists(_absoluteFilePath))
                 return;
-            
-            XmlSerializerWrapper.ToXml(this._absoluteFilePath, this.Config);
-            this._lastModified = new FileInfo(this._absoluteFilePath).LastWriteTime;
+
+            XmlSerializerWrapper.ToXml(_absoluteFilePath, Config);
+            _lastModified = new FileInfo(_absoluteFilePath).LastWriteTime;
         }
 
-        public int DecreaseDaysToSkip()
-        {
+        public int DecreaseDaysToSkip() {
             if (Config.DaysToSkip == 0)
                 return 0;
             Config.DaysToSkip--;
@@ -95,6 +69,22 @@ namespace TimeLoop.Managers
             return Config.DaysToSkip;
         }
 
-        public static implicit operator bool(ConfigManager? instance) => instance != null;
+        public static implicit operator bool(ConfigManager? instance) {
+            return instance != null;
+        }
+
+        #region Singleton
+
+        private static ConfigManager? _instance;
+
+        public static ConfigManager Instance {
+            get { return _instance ??= new ConfigManager(Main.ConfigFilePath); }
+        }
+
+        public static void Instantiate() {
+            _instance = new ConfigManager(Main.ConfigFilePath);
+        }
+
+        #endregion
     }
 }
