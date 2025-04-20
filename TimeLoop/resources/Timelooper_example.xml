@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TimeLoopConfig>
+    <!-- This is an example file.
+    Copy this file and rename it to Timelooper.xml to make your changes,
+    or let the mod create this file for you, but without the comments
+    -->
+    <!-- Enables the mod -->
+    <Enabled>true</Enabled>
+    <!--
+    "always" is Always mode, which means this day will loop no matter what.
+    "whitelist" is Whitelist mode, which means only players with `Whitelisted="true"` will move time
+    "threshold" is MinPlayers mode, which means time only moves when x amount of players are online
+    "whitelisted_threshold" is the combination of the two above: time only moves when x amount of whitelisted players are online
+    -->
+    <Mode>whitelist</Mode>
+    <!-- List of players -->
+    <Players>
+        <!-- In Whitelist mode, change `Whitelisted` to "true" to whitelist a player -->
+        <PlayerModel ID="Steam_76561198061215936" Name="Yui" Whitelisted="false"/>
+    </Players>
+    <!-- In threshold mode, change the value below to set the amount of minimum players -->
+    <MinPlayers>1</MinPlayers>
+    <!-- Skip looping for x amount of days. 0 to disable -->
+    <DaysToSkip>0</DaysToSkip>
+    <!-- Limit max loops per day. 0 to unlimited loops -->
+    <LoopLimit>0</LoopLimit>
+    <!-- Global language for the mod. Check the i18n folder for available languages -->
+    <Language>en_us</Language>
+    <!-- That's it, you're done. -->
+</TimeLoopConfig>
