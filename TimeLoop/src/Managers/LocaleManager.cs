@@ -1,27 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static SimpleJson2.SimpleJson2;
 
 namespace TimeLoop.Managers {
     public class LocaleManager {
         private bool _isFallbackMode;
-        private Dictionary<string, string> _localeDict = null!;
+        private Dictionary<string, string> _localeDict;
+        public List<string> LocaleList;
 
         private LocaleManager(string locale = "en_us") {
-            LoadLocale(locale);
+            _localeDict = LoadLocale(locale);
+            LoadedLocale = locale;
+            LocaleList = GetLocales();
         }
+
+        public string LoadedLocale { get; private set; }
 
         public void SetLocale(string newLocale) {
-            LoadLocale(newLocale);
+            _localeDict = LoadLocale(newLocale);
+            LoadedLocale = newLocale;
         }
 
-        private void LoadLocale(string locale = "en_us") {
+        private List<string> GetLocales() {
+            try {
+                var localePath = Main.GetAbsolutePath(Main.LocaleFolderPath);
+                var locales = Directory.GetFiles(localePath, "*.json", SearchOption.TopDirectoryOnly);
+                return locales.Select(Path.GetFileNameWithoutExtension).ToList();
+            }
+            catch (Exception e) {
+                Log.Error("[TimeLoop] Failed to get all locale files. {0}", e.Message);
+#if DEBUG
+                Log.Exception(e);
+#endif
+                return new List<string>();
+            }
+        }
+
+        private Dictionary<string, string> LoadLocale(string locale = "en_us") {
             try {
                 var localePath = Main.GetAbsolutePath(Path.Combine(Main.LocaleFolderPath, locale + ".json"));
                 using var stream = new StreamReader(localePath);
-                _localeDict = DeserializeObject<Dictionary<string, string>>(stream.ReadToEnd());
-                stream.Close();
+                return DeserializeObject<Dictionary<string, string>>(stream.ReadToEnd());
             }
             catch (Exception e) {
                 Log.Error("[TimeLoop] Failed to load localization file. {0}", e.Message);
@@ -29,7 +50,7 @@ namespace TimeLoop.Managers {
                 Log.Exception(e);
 #endif
                 _isFallbackMode = true;
-                _localeDict = new Dictionary<string, string>();
+                return new Dictionary<string, string>();
             }
         }
 

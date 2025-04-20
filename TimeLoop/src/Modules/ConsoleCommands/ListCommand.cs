@@ -34,7 +34,7 @@ namespace TimeLoop.Modules.ConsoleCommands {
         }
 
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
-            object[] validParams = { "auth", "unauth", "all" };
+            string[] validParams = { "auth", "unauth", "all" };
 
             if (_params.Count == 0 || _params[0].ToLower() == "all") {
                 var playerDataRepository = new PlayerRepository();

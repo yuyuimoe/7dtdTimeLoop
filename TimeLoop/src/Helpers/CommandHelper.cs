@@ -25,7 +25,7 @@ namespace TimeLoop.Helpers {
             }
         }
 
-        public static bool HasValue(object value, object[] array) {
+        public static bool HasValue(object value, string[] array) {
             if (array.Contains(value)) return true;
             SdtdConsole.Instance.Output(
                 LocaleManager.Instance.LocalizeWithPrefix("cmd_invalid_param", array.Join(), value)

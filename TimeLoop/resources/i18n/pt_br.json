@@ -67,5 +67,9 @@
   "cmd_skipdays_help": "Uso:\ntl_skipdays <dias>\n    <dias> - Quantidade de dias a ignorar o loop.",
   "cmd_skipdays_desc": "Ignora o loop por N dias.",
   "cmd_skipdays_return_disabled": "Nenhum dia irá ignorar o loop.",
-  "cmd_skipdays_return_enabled": "Os próximos {0} dia(s) irão ignorar o loop"
+  "cmd_skipdays_return_enabled": "Os próximos {0} dia(s) irão ignorar o loop",
+  "cmd_locale_help": "Uso:\ntl_locale <linguagem>\n\t<linguagem> A linguagem disponível na pasta i18n, sem o suffixo .json",
+  "cmd_locale_desc": "Altera a lingua atual",
+  "cmd_locale_state": "Lingua atual é {0}\nLista de linguagens disponíveis: {1}",
+  "cmd_locale_return": "Lingua alterada para {0}"
 }

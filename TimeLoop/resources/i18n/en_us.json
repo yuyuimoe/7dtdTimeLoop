@@ -67,5 +67,9 @@
   "cmd_skipdays_help": "Usage:\ntl_skipdays <days>\n    <days> The amount of days to skip looping.",
   "cmd_skipdays_desc": "Skip the looping for N amount of days.",
   "cmd_skipdays_return_disabled": "No days will skip the loop.",
-  "cmd_skipdays_return_enabled": "The following {0} day(s) will skip the loop"
+  "cmd_skipdays_return_enabled": "The following {0} day(s) will skip the loop",
+  "cmd_locale_help": "Usage:\ntl_locale <locale>\n\t<locale> The locale available in i18n folder, without .json",
+  "cmd_locale_desc": "Changes the current language",
+  "cmd_locale_state": "Current language is {0}\nList of available languages: {1}",
+  "cmd_locale_return": "Language changed to {0}"
 }
