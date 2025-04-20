@@ -10,17 +10,19 @@ namespace TimeLoop.Managers {
         private Dictionary<string, string> _localeDict;
         public List<string> LocaleList;
 
-        private LocaleManager(string locale = "en_us") {
+        private LocaleManager(string locale) {
             _localeDict = LoadLocale(locale);
-            LoadedLocale = locale;
             LocaleList = GetLocales();
         }
 
-        public string LoadedLocale { get; private set; }
+        public string LoadedLocale { get; private set; } = null!;
+
+        private string GetLocalePath(string locale) {
+            return Main.GetAbsolutePath(Path.Combine(Main.LocaleFolderPath, locale + ".json"));
+        }
 
         public void SetLocale(string newLocale) {
             _localeDict = LoadLocale(newLocale);
-            LoadedLocale = newLocale;
         }
 
         private List<string> GetLocales() {
@@ -38,9 +40,18 @@ namespace TimeLoop.Managers {
             }
         }
 
-        private Dictionary<string, string> LoadLocale(string locale = "en_us") {
+        private Dictionary<string, string> LoadLocale(string locale) {
             try {
-                var localePath = Main.GetAbsolutePath(Path.Combine(Main.LocaleFolderPath, locale + ".json"));
+                var localePath = TryGetValidLocale(locale) ?? TryGetValidLocale("en_us");
+                if (localePath == null) {
+                    Log.Error(
+                        "[TimeLoop] Failed to load any locale file. Using raw keys. (Use tl_locale or review the config file)");
+                    _isFallbackMode = true;
+                    LoadedLocale = "invalid_locale";
+                    return new Dictionary<string, string>();
+                }
+
+                LoadedLocale = Path.GetFileNameWithoutExtension(localePath);
                 using var stream = new StreamReader(localePath);
                 return DeserializeObject<Dictionary<string, string>>(stream.ReadToEnd());
             }
@@ -52,6 +63,13 @@ namespace TimeLoop.Managers {
                 _isFallbackMode = true;
                 return new Dictionary<string, string>();
             }
+        }
+
+        private string? TryGetValidLocale(string locale) {
+            var path = GetLocalePath(locale);
+            if (File.Exists(path)) return path;
+            Log.Error("[TimeLoop] Failed to load locale file for '{0}'", locale);
+            return null;
         }
 
         public string Localize(string key) {
@@ -77,7 +95,7 @@ namespace TimeLoop.Managers {
         private static LocaleManager? _instance;
 
         public static LocaleManager Instance {
-            get { return _instance ??= new LocaleManager(); }
+            get { return _instance ??= new LocaleManager(ConfigManager.Instance.Config.Language); }
         }
 
         public static void Instantiate(string locale) {
