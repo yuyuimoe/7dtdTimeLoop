@@ -33,7 +33,7 @@ namespace TimeLoop {
             return GameManager.Instance && GameManager.IsDedicatedServer;
         }
 
-        private void Awake() {
+        private void Awake(ref ModEvents.SGameAwakeData data) {
             if (!IsDedicatedServer())
                 return;
 
@@ -42,7 +42,7 @@ namespace TimeLoop {
             LocaleManager.Instantiate(ConfigManager.Instance.Config.Language);
         }
 
-        private void Update() {
+        private void Update(ref ModEvents.SGameUpdateData data) {
             if (!IsDedicatedServer())
                 return;
 
@@ -51,17 +51,17 @@ namespace TimeLoop {
                 TimeLoopManager.Instance.CheckForTimeLoop();
         }
 
-        private void OnPlayerRespawn(ClientInfo clientInfo, RespawnType respawnType, Vector3i spawnLocation) {
+        private void OnPlayerRespawn(ref ModEvents.SPlayerSpawnedInWorldData data) {
             if (!ConfigManager.Instance.Config.Enabled)
                 return;
 
-            if (respawnType != RespawnType.JoinMultiplayer)
+            if (data.RespawnType != RespawnType.JoinMultiplayer)
                 return;
 
             if (TimeLoopManager.Instance.IsTimeFlowing)
                 return;
 
-            MessageHelper.SendPrivateChat(LocaleManager.Instance.Localize("onlogin_timeloop_active"), clientInfo);
+            MessageHelper.SendPrivateChat(LocaleManager.Instance.Localize("onlogin_timeloop_active"), data.ClientInfo);
         }
     }
 }
