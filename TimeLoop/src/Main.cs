@@ -4,7 +4,6 @@ using System.Reflection;
 using HarmonyLib;
 using TimeLoop.Helpers;
 using TimeLoop.Managers;
-using UnityEngine;
 
 namespace TimeLoop {
     public class Main : IModApi {
@@ -26,7 +25,11 @@ namespace TimeLoop {
                 throw new Exception("Game directory could not be found.");
             }
 
-            return Path.Combine(gameDirectory, relativeFilePath);
+            var filePath = Path.Combine(gameDirectory, relativeFilePath);
+            if (!File.Exists(filePath) || !Directory.Exists(filePath))
+                throw new Exception($"File {filePath} could not be found. Check the mods folder");
+
+            return filePath;
         }
 
         public static bool IsDedicatedServer() {
