@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace TimeLoop {
     public class Main : IModApi {
-        public const string ConfigFilePath = "Mods/TimeLoop/TimeLooper.xml";
-        public const string LocaleFolderPath = "Mods/TimeLoop/i18n/";
+        public const string ConfigFilePath = "TimeLooper.xml";
+        public const string LocaleFolderPath = "i18n/";
 
         public void InitMod(Mod _modInstance) {
             Log.Out("[TimeLoop] Initializing ...");
@@ -20,7 +20,7 @@ namespace TimeLoop {
         }
 
         public static string GetAbsolutePath(string relativeFilePath) {
-            var gameDirectory = Directory.GetParent(Application.dataPath)?.FullName;
+            var gameDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName;
             if (gameDirectory == null) {
                 Log.Exception(new Exception("Game directory could not be found."));
                 throw new Exception("Game directory could not be found.");
