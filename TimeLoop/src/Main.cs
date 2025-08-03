@@ -26,10 +26,13 @@ namespace TimeLoop {
             }
 
             var filePath = Path.Combine(gameDirectory, relativeFilePath);
-            if (!File.Exists(filePath) || !Directory.Exists(filePath))
-                throw new Exception($"File {filePath} could not be found. Check the mods folder");
+            if (File.Exists(filePath))
+                return filePath;
 
-            return filePath;
+            if (Directory.Exists(filePath))
+                return filePath;
+
+            throw new Exception($"File {filePath} could not be found. Check the mods folder");
         }
 
         public static bool IsDedicatedServer() {
